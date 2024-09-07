@@ -1,7 +1,6 @@
 ---
 title: "A Little About Me"
 ---
-![](fatima_photo.jpg)
 
 Hi there! My name is Fatima and I'm a student at Baruch College pursuing my Master's in 
-Business Analytics after earning my degree in Accounting this past Spring. 
+Business Analytics after earning my degree in Accounting this past Spring.
