@@ -1,0 +1,436 @@
+---
+title: "Exploring the Fiscal Characteristics of Major US Public Transit Systems"
+--- 
+Fatima W.  |  09/22/2024
+
+![Purple Rain 3, Anne Marie Clarke, 2022. Source: Flickr](train.jpg)
+
+# Objective
+
+As cities expand and populations grow across the US, public transit continues to play a critical role in minimizing harmful emissions, reducing congestion, and is essential in providing accessible transit options. However, at what cost is it worth? Ultimately, passengers would love the idea of free transportation. Yet the financial health of transit systems across the country remains a challenge to most areas. One way this is measured is the farebox recovery ratio, that is, how much a transit system’s costs are covered by passenger fares. Essentially, it’s the fraction of revenues made from the fares we pay instead of taxes. It then comes to a question where we ask ourselves, are the transit systems we use really worth the money we pay? What does a fiscally healthy transit service look like and how efficient is it? How do transit systems across the country compare?
+
+# The Data Explained
+While the farebox ratio does provide key insights about a transit’s operational efficiency, it is a starting point to the many other factors that subjectively impact what a healthy transit service may look like. In this analysis, I’ll be using data obtained from the [National Transit Database (NTD)](https://www.transit.dot.gov/ntd) to analyze and judge the efficiency of US transit systems. More specifically, focus will be placed on farebox revenues, total revenues and expenses, and the total number of passenger trips and vehicle miles traveled. Data is compiled over the years from as early as 2002 to present day, however for purposes of my analysis, I will be using the 2022 version of the reports. This is done by combining several variables from the [2022 Fare Revenue](https://www.transit.dot.gov/ntd/data-product/2022-annual-database-fare-revenues) table, the latest [Monthly Ridership](https://www.transit.dot.gov/ntd/data-product/monthly-module-adjusted-data-release) tables, and the [2022 Operating Expenses](https://www.transit.dot.gov/ntd/data-product/2022-operating-expenses) reports. 
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+if(!require("tidyverse")) install.packages("tidyverse")
+
+# Let's start with Fare Revenue
+library(tidyverse)
+if(!file.exists("2022_fare_revenue.xlsx")){
+  download.file("http://www.transit.dot.gov/sites/fta.dot.gov/files/2024-04/2022%20Fare%20Revenue.xlsx", 
+                destfile="2022_fare_revenue.xlsx", 
+                quiet=FALSE, 
+                method="wget")
+}
+FARES <- readxl::read_xlsx("2022_fare_revenue.xlsx") |>
+  select(-`State/Parent NTD ID`, 
+         -`Reporter Type`,
+         -`Reporting Module`,
+         -`TOS`,
+         -`Passenger Paid Fares`,
+         -`Organization Paid Fares`) |>
+  filter(`Expense Type` == "Funds Earned During Period") |>
+  select(-`Expense Type`)
+
+# Next, expenses
+if(!file.exists("2022_expenses.csv")){
+  download.file("https://data.transportation.gov/api/views/dkxx-zjd6/rows.csv?date=20231102&accessType=DOWNLOAD&bom=true&format=true", 
+                destfile="2022_expenses.csv", 
+                quiet=FALSE, 
+                method="wget")
+}
+EXPENSES <- readr::read_csv("2022_expenses.csv") |>
+  select(`NTD ID`, 
+         `Agency`,
+         `Total`, 
+         `Mode`) |>
+  mutate(`NTD ID` = as.integer(`NTD ID`)) |>
+  rename(Expenses = Total) |>
+  group_by(`NTD ID`, `Mode`) |>
+  summarize(Expenses = sum(Expenses)) |>
+  ungroup()
+
+FINANCIALS <- inner_join(FARES, EXPENSES, join_by(`NTD ID`, `Mode`))
+
+# Monthly Transit Numbers
+library(tidyverse)
+if(!file.exists("ridership.xlsx")){
+  download.file("https://www.transit.dot.gov/sites/fta.dot.gov/files/2024-09/July%202024%20Complete%20Monthly%20Ridership%20%28with%20adjustments%20and%20estimates%29_240903.xlsx", 
+                destfile="ridership.xlsx", 
+                quiet=FALSE, 
+                method="wget")
+}
+TRIPS <- readxl::read_xlsx("ridership.xlsx", sheet="UPT") |>
+  filter(`Mode/Type of Service Status` == "Active") |>
+  select(-`Legacy NTD ID`, 
+         -`Reporter Type`, 
+         -`Mode/Type of Service Status`, 
+         -`UACE CD`, 
+         -`TOS`) |>
+  pivot_longer(-c(`NTD ID`:`3 Mode`), 
+               names_to="month", 
+               values_to="UPT") |>
+  drop_na() |>
+  mutate(month=my(month)) # Parse _m_onth _y_ear date specs
+MILES <- readxl::read_xlsx("ridership.xlsx", sheet="VRM") |>
+  filter(`Mode/Type of Service Status` == "Active") |>
+  select(-`Legacy NTD ID`, 
+         -`Reporter Type`, 
+         -`Mode/Type of Service Status`, 
+         -`UACE CD`, 
+         -`TOS`) |>
+  pivot_longer(-c(`NTD ID`:`3 Mode`), 
+               names_to="month", 
+               values_to="VRM") |>
+  drop_na() |>
+  group_by(`NTD ID`, `Agency`, `UZA Name`, 
+           `Mode`, `3 Mode`, month) |>
+  summarize(VRM = sum(VRM)) |>
+  ungroup() |>
+  mutate(month=my(month)) # Parse _m_onth _y_ear date specs
+
+USAGE <- inner_join(TRIPS, MILES) |>
+  mutate(`NTD ID` = as.integer(`NTD ID`))
+
+```
+
+After cleaning and joining the data and renaming some of our variables, it is finally ready for our use. The table below is a sample of our data, showcasing the variables used in uncovering farebox recovery ratios and ridership trends over time:
+
+```{r warning=FALSE, message=FALSE}
+if(!require("DT")) install.packages("DT")
+library(DT)
+
+USAGE <- USAGE |>
+  rename(metro_area = 'UZA Name')
+
+USAGE <- USAGE |>
+  mutate(Mode = case_when(
+    Mode == "HR" ~ "Heavy Rail", 
+    Mode == "DR" ~ "Demand Response", 
+    Mode == "FB" ~ "Ferryboat", 
+    Mode == "MB" ~ "Bus",
+    Mode == "SR" ~ "Streetcar Rail", 
+    Mode == "TB" ~ "Trolleybus", 
+    Mode == "VP" ~ "Vanpool", 
+    Mode == "CB" ~ "Commuter Bus",
+    Mode == "RB"~ "Bus Rapid Transit", 
+    Mode == "LR" ~ "Light Rail", 
+    Mode == "YR" ~ "Hybrid Rail", 
+    Mode == "MG" ~ "Monorail/Automated guideway transit", 
+    Mode == "CR" ~ "Commuter Rail", 
+    Mode == "AR" ~ "Alaska Railroad", 
+    Mode == "TR" ~ "Aerial Tramways", 
+    Mode == "IP" ~ "Inclined Plane",
+    Mode == "PB" ~ "Publico", 
+    Mode == "CC" ~ "Cable Car",
+    TRUE ~ "Unknown"))
+
+sample_n(USAGE, 1000) |> 
+  mutate(month = as.character(month)) |> 
+  select(-`NTD ID`,-`3 Mode`) |>
+  DT::datatable()
+
+```
+
+
+While most variables’ names are self-explanatory, it’s important to note the following:
+
+UPT 
+
+: stands for “Unlinked Passenger Trips”; it is the total number of individual passenger boardings or trips on a transit system.
+
+VRM
+
+: stands for “Vehicle Revenue Miles”; it is the total number of miles that transit vehicles travel when in service. 
+
+
+# Service Capacity: Vehicle Revenue Miles (VRM)
+
+One of the key indicators of transit efficiency is VRM (Vehicle Revenue Miles), which is a measure of how much service an agency provides to the public. High levels of VRM generally indicates there is high passenger demand for service, operations may be performed over large areas, and/or frequent trips are provided to passengers. This offers more opportunities for riders to access public transit, impacting the efficiency of a transit system. 
+
+Within our dataset, I found the MTA New York City Transit to have the highest total VRM of nearly 11 billion miles traveled: 
+
+```{r echo=TRUE , warning=FALSE, message=FALSE}
+agency_most_vrm <- USAGE |> 
+  group_by(Agency) |>
+  summarize(total_agency_vrm = sum(VRM)) |>
+  arrange(desc(total_agency_vrm)) |>
+  slice(1)
+  
+print(agency_most_vrm)
+```
+
+This suggests the MTA transit system is a significant contributor among other public transit systems across the US. As a resident of New York City, this finding was unsurprising to me considering the majority of the population heavily relies on public transit in the overcrowded city.
+
+It’s also noteworthy to mention that this number is inclusive of all modes of transportation (i.e. bus, heavy rail, etc.). Taking a look at which transit mode has the highest VRM:
+
+```{r echo=TRUE , warning=FALSE, message=FALSE}
+mode_most_vrm <- USAGE |>
+  group_by(Mode) |>
+  summarize(total_mode_vrm = sum(VRM, na.rm = TRUE)) |>
+  arrange(desc(total_mode_vrm)) |>
+  slice(1)
+  
+print(mode_most_vrm)
+
+```
+
+We see that buses were found to have the most VRM in total, which can be due to a variety of reasons. For example, do passengers use public bus transport because they may be safer and/or more convenient than other modes of transportation? Or is it possible that buses are the only means of transportation in the area? These are just a few points to consider when analyzing such results.
+
+```{r echo=TRUE , warning=FALSE, message=FALSE}
+mode_nyc <- USAGE |>
+  filter(Agency == "MTA New York City Transit") |>
+  group_by(Mode) |>
+  summarize(total_nycmode_vrm = sum(VRM)) |>
+  arrange(desc(total_nycmode_vrm)) |>
+  slice(1)
+  
+print(mode_nyc)
+
+```
+
+Additionally, I wanted to see which mode of transport contributed the most to the MTA’s high VRM, which was found to be (as I expected) heavy rail, or the subway. It is no surprise that the subway plays one of the most important roles in traveling across urban areas like New York City. Overall, it’s interesting to see the difference of modes impacting VRM across New York City and the nation overall.  
+
+
+# Ridership Trends & Unlinked Passenger Trips (UPT): Pre & Post Pandemic
+
+While VRM is a useful variable in measuring transit efficiency, UPT (Unlinked Passenger Trips) proves to be another critical measure, that is, the ridership levels. Higher levels of UPT generally indicates there is a strong demand for its respective transit services. 
+
+Now if we continue taking a look at the MTA New York City agency’s numbers for heavy rail, we’ll see that over 230 million trips were taken by passengers in May of 2024 alone:
+
+```{r echo=TRUE , warning=FALSE, message=FALSE}
+may2024_nyctrips <- USAGE |>
+  filter(Mode == "Heavy Rail", month >= "2024-05-01", month <= "2024-05-31") |>
+  summarize(nyc_may24 = sum(UPT, na.rm = TRUE))
+
+print(may2024_nyctrips)
+
+```
+
+While this number may seem high and suggests the city’s continued reliance on subway systems in New York, this certainly was not the case due to the COVID-19 pandemic that began nearly four years ago. Since the lockdown in NYC officially began in mid March, we’ll take a look at the total number of UPT for the month of April in 2019, and compare it against that of 2020.
+
+```{r echo=TRUE , warning=FALSE, message=FALSE}
+diff_april_total_ridership <- USAGE |>
+  filter(Mode == "Heavy Rail", 
+         (month >= "2019-04-01" & month <= "2019-04-30") |
+         (month >= "2020-04-01" & month <= "2020-04-30")) |>
+  group_by(month) |>
+  summarize(april_total_upt = sum(UPT, na.rm = TRUE)) |>
+  summarize(april_difference = 
+              sum(april_total_upt[month >= "2020-04-01" & month <= "2020-04-30"]) - 
+              sum(april_total_upt[month >= "2019-04-01" & month <= "2019-04-30"]))
+
+print(diff_april_total_ridership)
+
+```
+
+Between April 2019 and April 2020, the MTA NYC’s transit ridership severely declined by nearly 300 million passenger trips. Undoubtedly, the impact of the COVID-19 pandemic on NYC’s transit system was significant since concerns of health safety and remote work increased during the lockdown, among many other factors. 
+
+
+Of course, the MTA was not the only agency impacted by the pandemic. Below are the top ten agencies with the highest passenger ridership decline between 2019 and 2020:
+
+```{r echo=TRUE , warning=FALSE, message=FALSE}
+pandemic_ridership_2019 <- USAGE |> 
+  filter(month >= "2019-01-01" & month <= "2019-12-31") |>
+  group_by(Agency) |>
+  summarize(upt_2019 = sum(UPT, na.rm = TRUE))
+
+pandemic_ridership_2020 <- USAGE |>
+  filter(month >= "2020-01-01" & month <= "2020-12-31") |>
+  group_by(Agency) |>
+  summarize(upt_2020 = sum(UPT, na.rm = TRUE))
+
+#create a new df to find the ridership difference btwn the two years:
+
+pandemic_ridership_decline <- left_join(pandemic_ridership_2019, pandemic_ridership_2020, by = "Agency") |>
+  mutate(ridership_decline = upt_2020 - upt_2019) |>
+  arrange(ridership_decline)
+
+print(pandemic_ridership_decline)
+
+```
+
+The MTA suffered the most significant decline in ridership, having lost nearly 1.92 billion trips, followed by the Chicago Transit Authority and Washington Metro. There’s a trend we can see here where major cities across the US are hit the hardest with ridership lost during the pandemic. It makes sense in heavily populated cities where citizens typically rely on public transportation daily. Nonetheless, the health crisis has revealed the weaknesses of transit systems during this difficult time.
+
+# Ridership Recovery & Preferred Modes of Travel
+
+Despite the sharp declines agencies have faced, these systems have begun to adapt to the new changes brought on since the pandemic in recent years. If we take a look at the top ten metro areas with the highest ridership in 2023, we can clearly see these select transit systems are up and running well:
+
+```{r echo=TRUE , warning=FALSE, message=FALSE}
+highest_ridership_2023 <- USAGE |>
+  filter(month >= "2023-01-01" & month <= "2023-12-31") |>
+  group_by(metro_area) |>
+  summarize(upt_2023 = sum(UPT)) |>
+  arrange(desc(upt_2023))
+
+print(highest_ridership_2023)
+
+```
+
+Unsurprisingly, the New York/New Jersey metro area had the highest ridership results of roughly 3.27 billion trips, with Los Angeles and Chicago following behind it. Seeing how NYC/New Jersey's ridership statistics significantly surpasses other metro areas’ UPT, it suggests its commuters have a unique dependence on the city’s transit system when compared to other more car-dependent cities like Chicago and Los Angeles. Overall, these figures highlight the transit systems’ ability to bounce back, especially in major urban cities where traffic congestion and dense populations make public transit a crucial necessity.
+
+
+Moving onto preferred modes of travel, I was interested to see which is preferred when given two options: heavy rail and bus. 
+
+```{r echo=TRUE , warning=FALSE, message=FALSE}
+preferred_mode <- USAGE |>
+  filter(Mode == "Heavy Rail" | Mode == "Bus") |>
+  group_by(Mode) |>
+  summarize(mode_upt = sum(UPT, na.rm = TRUE)) |>
+  arrange(desc(mode_upt))
+
+print(preferred_mode)
+
+```
+
+We can see buses had roughly 97.7 billion riders in transit systems across the nation, whereas heavy rail had recorded 73.5 billion riders. I found this interesting because I had expected there to be more passengers that rode the train for a number of assumptions. One of these includes the assumption that trains travel faster than buses and naturally, passengers would prefer to take the train to get to their destination quicker. However I failed to consider that not only is heavy rail transportation likely more expensive to operate (and therefore may be more costly for the passenger’s fare price), but it’s also possible that commuters don’t have the option to choose between these modes of transportation. One may have no choice but to take a bus to their destination. Anyhow, this finding emphasizes the importance of buses for millions of riders across the country, despite urban areas’ dependence on heavy rail transportation. 
+
+
+# Farebox Recovery 
+
+Up until this point, there has been much discussion about high levels of ridership and the amount of service provided by transit agencies. Previously stated, farebox recovery refers to the ratio of a transit’s operational costs to its passenger fares. As we begin to analyze farebox ratios and efficiency of transit systems, I’ll be focusing on major transit systems that are greater than or equal to 400,000 UPT for the year 2022 by creating a new dataframe with additional variables: 
+
+```{r echo=TRUE , warning=FALSE, message=FALSE}
+USAGE_2022_ANNUAL <- USAGE |>
+  filter(month >= "2022-01-01" & month <= "2022-12-31") |>
+  group_by(`NTD ID`, Agency, metro_area, Mode, UPT, VRM) |>
+  summarize(UPT = sum(UPT, na.rm = TRUE),
+            VRM = sum(VRM, na.rm = TRUE)) |>
+  ungroup()
+
+# Have to fix abbreviations with full name for the variable Mode before left join:
+FINANCIALS <- FINANCIALS |>
+  mutate(Mode = case_when(
+    Mode == "HR" ~ "Heavy Rail", 
+    Mode == "DR" ~ "Demand Response", 
+    Mode == "FB" ~ "Ferryboat", 
+    Mode == "MB" ~ "Bus",
+    Mode == "SR" ~ "Streetcar Rail", 
+    Mode == "TB" ~ "Trolleybus", 
+    Mode == "VP" ~ "Vanpool", 
+    Mode == "CB" ~ "Commuter Bus",
+    Mode == "RB"~ "Bus Rapid Transit", 
+    Mode == "LR" ~ "Light Rail", 
+    Mode == "YR" ~ "Hybrid Rail", 
+    Mode == "MG" ~ "Monorail/Automated guideway transit", 
+    Mode == "CR" ~ "Commuter Rail", 
+    Mode == "AR" ~ "Alaska Railroad", 
+    Mode == "TR" ~ "Aerial Tramways", 
+    Mode == "IP" ~ "Inclined Plane",
+    Mode == "PB" ~ "Publico", 
+    Mode == "CC" ~ "Cable Car",
+    TRUE ~ "Unknown"))
+
+
+USAGE_AND_FINANCIALS <- left_join(USAGE_2022_ANNUAL, 
+                                  FINANCIALS, 
+                                  join_by(`NTD ID`, Mode)) |>
+  drop_na()
+
+```
+
+Using the newly created dataframe, USAGE_AND_FINANCIALS, I’ll first determine which transit agency had the highest UPT based on heavy rail and buses in 2022:
+
+```{r echo=TRUE , warning=FALSE, message=FALSE}
+most_upt_2022 <- USAGE_AND_FINANCIALS |>
+  filter(UPT >= 400000) |>
+  group_by(Agency, Mode) |>
+  summarize(highest_upt = max(UPT)) |>
+  arrange(desc(highest_upt))
+
+print(most_upt_2022)
+
+```
+
+As we previously discussed at length, the MTA New York City Transit continued to lead in UPT, with roughly 172 million trips in heavy rail, followed by 41 million trips in buses. However when we go on to calculate agencies with the highest farebox recovery ratio, calculated as total fares divided by expenses: 
+
+```{r echo=TRUE , warning=FALSE, message=FALSE}
+highest_fare_recov <- USAGE_AND_FINANCIALS |>
+  filter(UPT >= 400000) |>
+  mutate(fare_rec_rate = `Total Fares`/Expenses) |>
+  group_by(Agency, Mode) |>
+  summarize(highest_ratio = max(fare_rec_rate)) |>
+  arrange(desc(highest_ratio))
+
+print(highest_fare_recov)
+
+```
+
+We see that the Anaheim Transportation Network (ATN) had the highest farebox recovery ratio of 86.5%, meaning most of its bus operating costs are covered by its passenger fares. Contrastingly, the MTA’s heavy rail system was ranked 43.5%, which is nearly half the farebox ratio of ATN. These comparisons don’t stop here; if we take a look at which transit system had the lowest expenses per UPT:
+
+```{r echo=TRUE , warning=FALSE, message=FALSE}
+lowest_exp_upt <- USAGE_AND_FINANCIALS |>
+  filter(UPT >= 400000) |>
+  mutate(exp_per_upt = Expenses/UPT) |>
+  group_by(Agency, Mode) |>
+  summarize(min_exp_upt = min(exp_per_upt)) |>
+  arrange(min_exp_upt)
+
+print(lowest_exp_upt)
+
+```
+
+Again we find ATN to rank first, indicating their financial efficiency at $12.80 per UPT. Meanwhile, the MTA had results much higher than that of ATN, roughly $31 per UPT. With such a high expense per rider, one would assume that the agency’s fare revenue generated would cover a larger proportion of its operating expenses. Yet the MTA’s low farebox ratio reveals the agency’s needs for additional funding to cover its costs. So although the MTA's heavy rail service serves a much greater population over New York City’s four boroughs, these findings may suggest that smaller transit systems operate more cost-efficiently, whereas major city transit systems like the MTA are challenged with covering higher operational costs related to the extent and complexity of their services offered. 
+
+
+# Operational & Financial Efficiency
+
+Furthering the analysis of public transit’s operational and financial efficiency, we’ll now take a look at the fares and expenses incurred, still keeping our focus on major transit systems that are greater than or equal to 400,000 UPT for the year 2022. When calculating which system had the highest total fares per UPT:
+
+```{r echo=TRUE , warning=FALSE, message=FALSE}
+highest_fare_upt <- USAGE_AND_FINANCIALS |>
+  filter(UPT >= 400000) |>
+  mutate(fare_per_upt = `Total Fares`/UPT) |>
+  group_by(Agency, Mode) |>
+  summarize(max_fare_upt = max(fare_per_upt, na.rm = TRUE)) |>
+  arrange(desc(max_fare_upt))
+
+print(highest_fare_upt)
+
+```
+
+We found that the New Jersey Transit Corporation for buses had the highest fares of $525 per UPT. Following this is the MTA’s Metro-North Railroad’s commuter bus, costing $161 per UPT, and further down is the MTA NYC’s transit commuter bus costing $112 per UPT. These findings may be due to a number of possible suggestions, such as the type of commuters being served. For example, it’s possible that certain systems serve higher-income commuters which allows systems to charge higher prices and as a result generate more revenue, even if its overall ridership is lower when compared to other agencies.
+
+
+Another important question to consider is which transit system had the lowest expenses per VRM in order to find out which agency provides the best cost-effective services based on miles traveled: 
+
+```{r echo=TRUE , warning=FALSE, message=FALSE}
+lowest_exp_vrm <- USAGE_AND_FINANCIALS |>
+  filter(UPT >= 400000) |>
+  mutate(exp_per_vrm = Expenses/VRM) |>
+  group_by(Agency, Mode) |>
+  summarize(min_exp_vrm = min(exp_per_vrm, na.rm = TRUE)) |>
+  arrange(min_exp_vrm)
+
+print(lowest_exp_vrm)
+
+```
+
+The Interurban Transit Partnership was found to have the lowest expenses per VRM at $77.20, followed by City of El Paso and Des Moines Area Regional Transit Authority, all of which are bus transportation. It’s important to consider not only the mode, since certain vehicles are more costly than others to run, but also the demand for public transit as we’ve discussed earlier. Depending on the size of transit systems and service provided, it likely affects the agency’s ability to operate efficiently on a per-mile basis. 
+
+
+To further assess transit systems’ revenue efficiency, we should also consider the highest total fares per VRM:
+
+```{r echo=TRUE , warning=FALSE, message=FALSE}
+highest_fare_vrm <- USAGE_AND_FINANCIALS |>
+  filter(UPT >= 400000) |>
+  mutate(fare_per_vrm = `Total Fares`/VRM) |>
+  group_by(Agency, Mode) |>
+  summarize(max_fare_vrm = max(fare_per_vrm, na.rm = TRUE)) |>
+  arrange(desc(max_fare_vrm))
+
+print(highest_fare_vrm)
+
+```
+
+Washington State Ferries generate the most revenue at $1,120 for each mile that its ferry operates, whereas MTA NYC Transit's heavy rail generates $91.50 per VRM. A high fare per VRM may suggest that a transit system is utilizing resources and providing services to riders efficiently. Essentially, it’s a measure of a system’s operations and financial viability. It is possible that less common transit modes such as ferries may receive more revenue per mile traveled due to the generally niche group of commuters the agency serves. 
+
+
+# Concluding Notes
+
+It now comes to a point where we should ask ourselves, which is the most efficient transit system in the country? The answer to this opinionated question depends on how we define efficiency. We’ve discussed total passenger fares compared to UPT and VRM, both of which measure efficiency from different perspectives - passenger usage versus services provided. Does a financially self-sustaining transit system necessarily mean it’s more efficient? Or maybe low expenses per rider would be a better measure of efficiency, because it would suggest a transit system’s ability to provide affordable services to its riders. 
+
+
+In this case, we’ll define efficiency to be the cost associated with each passenger ride (expense per UPT) and highest number of riders (UPT). From the analysis above, we did find Anaheim Transportation Network to have the lowest ridership costs. So from the looks of it, it seems that Anaheim Transportation Network (ATN) would be the most efficient transit system in the country. However, as already emphasized throughout this project, the size and scope of services provided by transit systems play a crucial role with respect to its efficiency. While ATN bus service appears to be cost effective, it is also a way smaller system when compared to major transit systems such as the MTA (specifically their heavy rail services). Now, the MTA’s cost per passenger (for heavy rail) is more than double of that of ANT. But being that the MTA serves the most passengers, and despite their existing challenges to cover operational costs with fare revenues, I would say that their system is still one of the most efficient transit services across the country. Overall, I would answer this question in two ways; ANT is considered the most efficient transit service among smaller-scaled systems, while New York City’s MTA services ranks the same when compared against larger-scaled systems. 
+
