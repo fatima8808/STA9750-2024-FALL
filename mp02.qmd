@@ -1,0 +1,140 @@
+---
+title: "The Business of Show Business"
+--- 
+Fatima W.  |  10/18/2024
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+#load in all our data and packages
+
+library('dplyr')
+library('ggplot2')
+library('stringr')
+library('DT')
+
+get_imdb_file <- function(fname){
+  BASE_URL <- "https://datasets.imdbws.com/"
+  fname_ext <- paste0(fname, ".tsv.gz")
+  if(!file.exists(fname_ext)){
+    FILE_URL <- paste0(BASE_URL, fname_ext)
+    download.file(FILE_URL, 
+                  destfile = fname_ext)
+  }
+  as.data.frame(readr::read_tsv(fname_ext, lazy=FALSE))
+}
+
+NAME_BASICS      <- get_imdb_file("name.basics")
+
+TITLE_BASICS     <- get_imdb_file("title.basics")
+
+TITLE_EPISODES   <- get_imdb_file("title.episode")
+
+TITLE_RATINGS    <- get_imdb_file("title.ratings")
+
+TITLE_CREW       <- get_imdb_file("title.crew")
+
+TITLE_PRINCIPALS <- get_imdb_file("title.principals")
+
+NAME_BASICS <- NAME_BASICS |> 
+  filter(str_count(knownForTitles, ",") > 1)
+
+TITLE_RATINGS <- TITLE_RATINGS |>
+  filter(numVotes >= 100)
+
+TITLE_BASICS <- TITLE_BASICS |>
+  semi_join(TITLE_RATINGS, 
+            join_by(tconst == tconst))
+
+TITLE_CREW <- TITLE_CREW |>
+  semi_join(TITLE_RATINGS, 
+            join_by(tconst == tconst))
+
+TITLE_EPISODES_1 <- TITLE_EPISODES |>
+  semi_join(TITLE_RATINGS, 
+            join_by(tconst == tconst))
+TITLE_EPISODES_2 <- TITLE_EPISODES |>
+  semi_join(TITLE_RATINGS, 
+            join_by(parentTconst == tconst))
+
+TITLE_EPISODES <- bind_rows(TITLE_EPISODES_1,
+                            TITLE_EPISODES_2) |>
+  distinct()
+
+TITLE_PRINCIPALS <- TITLE_PRINCIPALS |>
+  semi_join(TITLE_RATINGS, join_by(tconst == tconst))
+
+
+rm(TITLE_EPISODES_1)
+rm(TITLE_EPISODES_2)
+```
+
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+################################################################################
+# Task 1
+################################################################################
+
+NAME_BASICS <- NAME_BASICS |>
+  mutate(birthYear = as.numeric(birthYear),
+         deathYear = as.numeric(deathYear))
+
+glimpse(TITLE_BASICS)
+TITLE_BASICS <- TITLE_BASICS |>
+  mutate(isAdult = as.logical(isAdult),
+         startYear = as.numeric(startYear),
+         endYear = as.numeric(endYear),
+         runtimeMinutes = as.numeric(runtimeMinutes))
+
+glimpse(TITLE_EPISODES)
+TITLE_EPISODES <- TITLE_EPISODES |>
+  mutate(seasonNumber = as.numeric(seasonNumber),
+         episodeNumber = as.numeric(episodeNumber))
+
+glimpse(TITLE_RATINGS)
+TITLE_RATINGS <- TITLE_RATINGS |>
+  mutate(averageRating = as.numeric(averageRating),
+         numVotes = as.numeric(numVotes))
+
+glimpse(TITLE_CREW)
+TITLE_CREW <- TITLE_CREW |>
+  mutate(tconst = as.character(tconst),
+         directors = as.character(directors))
+
+glimpse(TITLE_PRINCIPALS)
+TITLE_PRINCIPALS <- TITLE_PRINCIPALS |>
+  mutate(job = as.character(job),
+         characters = as.character(characters))
+```
+
+```{r}
+################################################################################
+# Task 2
+################################################################################
+
+# How many movies are in our data set? How many TV series? How many TV episodes?
+
+title_counts <- TITLE_BASICS |>
+    group_by(titleType) |>
+  summarize(count = n()) |>
+  filter(titleType %in% c('movie', 'tvSeries', 'tvEpisode'))
+
+title_counts_table <- datatable(title_counts)
+
+colnames(title_counts) <- c('Title Type', 'Number of Movies')
+
+print(title_counts_table)
+
+# Who is the oldest living person in our data set?
+
+glimpse(NAME_BASICS)
+oldest_person <- NAME_BASICS |>
+  filter(!is.na(birthYear)) |>
+  mutate(age = deathYear - birthYear) |>
+  arrange(desc(age)) |>
+  select(primaryName, birthYear, deathYear, primaryProfession, age) |>
+  slice(1)
+
+oldest_person_table <- datatable(oldest_person)
+colnames(oldest_person) <- c('Name', 'Year of Birth', 'Year of Death', 'Profession', 'Age')
+print(oldest_person_table)
+```
+
