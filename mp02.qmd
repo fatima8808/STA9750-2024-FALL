@@ -1,15 +1,24 @@
 ---
-title: "The Business of Show Business"
+title: "The Business of Show Business: A Deep Dive into the Film Industry"
 --- 
 Fatima W.  |  10/18/2024
+![Theatre in London, Photo by Rawpixel under Creative Commons](movie.jpg)
+What comes to mind when you’re picking a movie to watch? Do you look for a certain genre, actors/actresses, or directors/producers? There’s hundreds of thousands of movies that exist, and there’s thousands more to be made. One important fact about the entertainment industry is that its consumers have an insatiable demand for content – but not just any content. Surely, there are thousands of lesser known films/television shows that flopped or didn’t receive the recognition it may have deserved. At the same time, there are hundreds of movies deemed successful in their own ways, whether it’s due to earned box office sales, critic reviews, award nominations, or average rating. With that being said, what determines the success of a movie? The motivation of this project is to not only understand what makes a film successful, but to develop a non-financial success metric to be used in deciding what kind of movie should be remade, and how. So grab some popcorn and get comfy, you’re in for a treat!
 
+# The Data Explained
+To begin the analysis, we’ll be using a collection of non-commercial datasets from IMDb, the Internet Movie Database that provides information on millions of films/television shows. These databases include information about movies/TV series, the cast and crew members, average ratings submitted by users, number of people who have rated these films, and more. More detailed information can be found [here,] (https://developer.imdb.com/non-commercial-datasets/) however I’ve included a mapped graphic to help visualize the breakdown of each dataset I’ll be using in conjunction with one another. This mapping will prove to be useful to refer to when analyzing the coding portions in this analysis.
+
+![Visual Mapping of Data Sets](database_mapping.jpg)
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
-#load in all our data and packages
+#| code-fold: true
+#| code-summary: "Click to view code"
+# load in all our data and packages
 
-library('dplyr')
-library('ggplot2')
-library('stringr')
-library('DT')
+library(dplyr)
+library(ggplot2)
+library(stringr)
+library(DT)
+library(tidyr)
 
 get_imdb_file <- function(fname){
   BASE_URL <- "https://datasets.imdbws.com/"
@@ -21,6 +30,11 @@ get_imdb_file <- function(fname){
   }
   as.data.frame(readr::read_tsv(fname_ext, lazy=FALSE))
 }
+```
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+#| code-fold: true
+#| code-summary: "Click to view code"
 
 NAME_BASICS      <- get_imdb_file("name.basics")
 
@@ -33,9 +47,21 @@ TITLE_RATINGS    <- get_imdb_file("title.ratings")
 TITLE_CREW       <- get_imdb_file("title.crew")
 
 TITLE_PRINCIPALS <- get_imdb_file("title.principals")
+```
+
+# Cleaning the Data for Usability 
+Because the data sets are so large, we’ll restrict our attention to people with at least two “known for” credits within the `NAME_BASICS` table. Since there are also a long list of obscure records, we’ll filter out and remove titles with less than 100 ratings. We can see that these titles make up about 75% of the entire data set. The same filtering will be performed on our other data sets.
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+#| code-fold: true
+#| code-summary: "Click to view code"
 
 NAME_BASICS <- NAME_BASICS |> 
   filter(str_count(knownForTitles, ",") > 1)
+
+TITLE_RATINGS |>
+    pull(numVotes) |>
+    quantile()
 
 TITLE_RATINGS <- TITLE_RATINGS |>
   filter(numVotes >= 100)
@@ -62,16 +88,14 @@ TITLE_EPISODES <- bind_rows(TITLE_EPISODES_1,
 TITLE_PRINCIPALS <- TITLE_PRINCIPALS |>
   semi_join(TITLE_RATINGS, join_by(tconst == tconst))
 
-
 rm(TITLE_EPISODES_1)
 rm(TITLE_EPISODES_2)
 ```
-
+After extracting our data, our first task is to ensure each variable is properly assigned to its data type or mode. Most columns in these datasets are read in as character vectors, however some should be classified as numeric or logical. So we’ll clean these columns in each table. 
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
-################################################################################
-# Task 1
-################################################################################
+#| code-fold: true
+#| code-summary: "Click to view code"
 
 NAME_BASICS <- NAME_BASICS |>
   mutate(birthYear = as.numeric(birthYear),
@@ -103,38 +127,482 @@ glimpse(TITLE_PRINCIPALS)
 TITLE_PRINCIPALS <- TITLE_PRINCIPALS |>
   mutate(job = as.character(job),
          characters = as.character(characters))
+
 ```
 
-```{r}
-################################################################################
-# Task 2
-################################################################################
+# An Exploratory Analysis of the TV Production & Film Industry
+Now that we’ve gathered and cleaned our data, we’ll begin analyzing and uncovering insights. Firstly, let’s find out how many movies, TV series, and TV episodes we have present in our data set. Shown below, there are roughly just over 130K movies, 155K TV episodes, and nearly 30K TV series.
 
-# How many movies are in our data set? How many TV series? How many TV episodes?
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+#| code-fold: true
+#| code-summary: "Click to view code"
 
 title_counts <- TITLE_BASICS |>
     group_by(titleType) |>
   summarize(count = n()) |>
   filter(titleType %in% c('movie', 'tvSeries', 'tvEpisode'))
 
-title_counts_table <- datatable(title_counts)
-
 colnames(title_counts) <- c('Title Type', 'Number of Movies')
+title_counts |>
+  DT::datatable()
 
-print(title_counts_table)
+```
 
-# Who is the oldest living person in our data set?
+With this many titles across various types of title types, I wanted to know who is the oldest living person in our data set and what their profession is. One important thing to consider, however, is within the `NAME_BASICS` data set, there is a double meaning to the NA values in the `deathYear` column. These NA values may indicate that the year of death is “unknown” or “still alive/not dead yet.” According to the Guinness World Records, the oldest person alive in the world is [Tomiko Itooka] (https://www.guinnessworldrecords.com/world-records/84549-oldest-person-living), who was born in 1908. Therefore, to approach this finding, we’ll filter out people who were born in 1908 onward and NA values. As a result, the oldest living person in our data set is Angel Acciaresi, who was an assistant director, director, and writer. Seeing this person’s age, it’s a nice reminder and interesting to think about how long the entertainment industry has existed and how far it’s come. 
 
-glimpse(NAME_BASICS)
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+#| code-fold: true
+#| code-summary: "Click to view code"
+
 oldest_person <- NAME_BASICS |>
-  filter(!is.na(birthYear)) |>
-  mutate(age = deathYear - birthYear) |>
+  filter(is.na(deathYear), birthYear >= 1908) |>
+  mutate(age = 2024 - birthYear) |>
   arrange(desc(age)) |>
-  select(primaryName, birthYear, deathYear, primaryProfession, age) |>
+  select(primaryName, birthYear, primaryProfession, age) |>
   slice(1)
 
-oldest_person_table <- datatable(oldest_person)
-colnames(oldest_person) <- c('Name', 'Year of Birth', 'Year of Death', 'Profession', 'Age')
-print(oldest_person_table)
+colnames(oldest_person) <- c('Name', 'Year of Birth', 'Profession', 'Age')
+oldest_person |>
+  DT::datatable()
+
 ```
+
+# TV Series Observations
+
+I’m interested in uncovering some insights about TV series productions and their ratings given a baseline of at least 200,000 IMDb ratings. There exists one TV Episode in this data set that fits this criteria, that is, the episode Ozymandias from the American crime drama television series, Breaking Bad. In fact, this episode is ranked the number one [“Best TV Episodes”] (https://en.wikipedia.org/wiki/Ozymandias_(Breaking_Bad)#:~:text=%22Ozymandias%22%20frequently%20tops%20polls%20of,'Best%20TV%20Episodes'%20ranking.) for its perfect 10/10 rating. 
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+#| code-fold: true
+#| code-summary: "Click to view code"
+
+perfect_tv_ep <- TITLE_BASICS |>
+  filter(titleType == 'tvEpisode') |>
+  left_join(TITLE_RATINGS, by = 'tconst') |>
+  filter(averageRating == 10, numVotes >= 200000) |>
+  select(primaryTitle, genres, averageRating, numVotes)
+
+colnames(perfect_tv_ep) <- c('TV Episode Title', 'Genres', 'Avg. Rating', 'Number of Votes')
+perfect_tv_ep |>
+  DT::datatable()
+
+```
+
+I also wanted to know which TV series has the highest average rating. To answer this, I’ll be setting the benchmark to series with more than 12 episodes, and I’ll use the average rating of the TV series as a whole, rather than averaging the sum of each TV series’ episodes’ ratings. As a result, the highest average rating of a TV series is 9.71, which belongs to “The Youth Memories.” 
+
+Of all the TV series that exist across cultures worldwide in multiple languages and genres, a Chinese romance drama ranked the highest average rating. What made this specific drama stand out? Could it be due to its cultural appeal – for example, are Chinese dramas more successful/popular than Turkish dramas? Or maybe it’s the series’ romance elements that attract viewers to its show. As someone who occasionally watches C-dramas, I think this finding is interesting and important to consider as we deepen our analysis going further about what makes a movie/series successful. 
+
+# Specific Movie Observations 
+
+Next, I wanted to take a look at well known actors/actresses and the projects they’re known for. More specifically, I’ll take a look at American actor Mark Hamill and the average ratings of movies he took part in. Unsurprisingly, Hamill is known for his role in the Star Wars original and sequel trilogies. However, take a look at the average ratings and the ranking of each sequel. Normally, some may assume that movie sequels are particularly bad, which is, of course, subjective and opinion-based. Keeping this in mind, we see that’s not exactly the case where Star Wars: Episode V - The Empire Strikes Back receives a higher ranking than Star Wars: Episode IV - A New Hope, which was released three years prior. 
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+#| code-fold: true
+#| code-summary: "Click to view code"
+
+mark_hamill_top4_projects <- NAME_BASICS |>
+  filter(primaryName == 'Mark Hamill') |>
+  separate_longer_delim(knownForTitles, ',') |>
+  rename(tconst = knownForTitles) |>
+  left_join(TITLE_BASICS, by = "tconst") |> 
+  left_join(TITLE_RATINGS, by = "tconst") |> 
+  arrange(desc(averageRating), desc(numVotes)) |>
+  slice_head(n = 4) |>
+  select(primaryTitle, startYear, averageRating, numVotes)
+
+colnames(mark_hamill_top4_projects) <- c('Movie Title', 'Year of Release', 'Avg. Rating', 'Number of Votes')
+mark_hamill_top4_projects |>
+  DT::datatable()
+
+```
+
+# The Rise & Fall of TV Series: *Happy Days*
+Have you ever heard of the phrase “jump the shark”? This is a common idiom used to describe a moment where a once-great show becomes ridiculous and rapidly loses watchers due to its quality. This idiom actually originated from a 1974 American sitcom that ran for 11 seasons, called “Happy Days.” In season 5 episode 3, one of the show’s characters, Fonzie (Henry Winkler) takes on the challenge to prove his bravery by water-skiing over a confined shark in the water. As the series continued on with their seasons, watchers grew tired of the show and mentioned that it was this season’s episode where the entire series began to go downhill, hence the phrase, “jump the shark.” The reason why I bring up this point is to see how the show performed before and after this season’s episode. More specifically, is it true that episodes from later seasons of Happy Days have lower average ratings than the early seasons? 
+
+Because there are 11 seasons, we’ll determine seasons 1 through 5 to be “early seasons” and seasons 6 through 11 to be “later seasons.” As shown below, the series indeed had a higher average rating in earlier seasons than that of later seasons. 
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+#| code-fold: true
+#| code-summary: "Click to view code"
+
+# Is it true that episodes from later seasons of Happy Days have lower average ratings than the early seasons?
+
+happydays <- TITLE_BASICS |>
+  filter(primaryTitle == 'Happy Days', titleType == 'tvSeries') |>
+  select(startYear, endYear, tconst)
+# Happy Days tconst = tt0070992
+
+happydays_getavg <- TITLE_EPISODES |>
+  inner_join(happydays, join_by(parentTconst == tconst)) |>
+  left_join(TITLE_RATINGS, join_by(tconst == tconst)) |>
+  select(seasonNumber, episodeNumber, averageRating)
+
+happydays_earlyavg <- happydays_getavg |>
+  filter(seasonNumber <= 5) |>
+  summarize(avg_rating1 = round(mean(averageRating, na.rm = TRUE), 2))
+
+happydays_lateravg <- happydays_getavg |>
+  filter(seasonNumber > 5) |>
+  summarize(avg_rating2 = round(mean(averageRating, na.rm = TRUE), 2))
+  
+happydays_avg <- cbind(happydays_earlyavg, happydays_lateravg)
+colnames(happydays_avg) <- c('Avg Rating Seasons 1-5', 'Avg Rating Seasons 6-11')
+
+happydays_avg |>
+  DT::datatable()
+
+```
+
+# Quantifying Success – Development of a Success Metric
+Now that we’ve explored some of our data, our main goal is to propose new movies deemed to be successful. In order to do that, however, we need to come up with a way of measuring the success of a movie given our non-financial data sets, or in other words, IMDb ratings and votes. And while there is no right way to measure success, we’ll assume that successful projects will have both a high average IMDb rating and a large number of ratings, which would indicate quality and broad awareness, respectively. 
+
+I had a few approaches in my development of a success metric. Initially, I thought about adding the `averageRating` with the log of `numVotes` , where taking the log of vote count will help compress large values. However, this seemed too simple of a calculation to me because I felt that there needed to be some kind of weight added to each factor. I thought about weighing the average rating and number of votes equally, shown below:
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+#| code-fold: true
+#| code-summary: "Click to view code"
+
+title_ratings_test2 <- TITLE_RATINGS |>
+  mutate(success_score = round((averageRating * 0.50)  + (log(numVotes) * 0.50), 2)) |>
+  arrange(desc(success_score)) |>
+  head(10)
+
+title_ratings_test2 |>
+  DT::datatable()
+
+```
+
+This method may have been satisfactory, however I still felt like there is a better way to develop a success metric because I assumed that average rating and number of votes should be weighed equally. Although our data sets contain all votes for each title, I felt that not all votes have the same impact/weight on the final rating. During this process, I wanted to remain mindful of the possibility that people will normally rate and vote on titles that they have strong feelings for, whether they are good or bad. For example, a movie may have been so horrible for someone that they went out of their way to submit a low rating, whereas someone who may have felt indifferent to a movie didn’t bother to submit a rating at all. Had they submitted one though, maybe it would’ve been an average rating like 5/10. I gave one more try where I used the weighted average method and decided to use a benchmark of 10,000 votes as the minimum number of votes that makes a movie successful. To put it into a simple mathematical formula: 
+
+> Using weighted average to find the success score
+> Success Score = [(R * v) + (C * m)] / (v + m)
+>
+> where
+> R = average rating of each title
+> v = number of votes of each title
+> C = the mean rating of all titles
+> m = minimum number of votes that considers a movie to be successful (10,000 votes)
+
+This ended up being my chosen method, where I also used log in calculating the number of votes.
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+#| code-fold: true
+#| code-summary: "Click to view code"
+min_numvotes <- 10000
+mean_rating_alltitles <- mean(TITLE_RATINGS$averageRating)
+
+TITLE_RATINGS_FINAL <- TITLE_RATINGS |>
+  left_join(TITLE_BASICS, by = 'tconst') |>
+  filter(titleType == 'movie') |>
+  mutate(success_score = round((averageRating * (log(numVotes))) + 
+                            (min_numvotes * mean_rating_alltitles) / ((log(numVotes)) + min_numvotes), 2))
+TITLE_RATINGS_FINAL |>
+  DT::datatable()
+
+```
+
+# Putting Our Success Metric to Test
+
+Now that the success metric is chosen, we’ll perform data validation by answering a series of questions. First, we’ll choose the top 5-10 movies based on the success metric and confirm that they were indeed box office successes.
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+#| code-fold: true
+#| code-summary: "Click to view code"
+top_10movies <- TITLE_RATINGS_FINAL |>
+  arrange(desc(success_score)) |>
+  select(primaryTitle, averageRating, numVotes, success_score, startYear) |>
+  head(10)
+
+colnames(top_10movies) <- c('Movie Title', 'Avg Rating', 'Number of Votes', 'Success Score', 'Year Released')
+top_10movies |>
+  DT::datatable()
+
+```
+
+The majority of the movies listed above are indeed box office successes, however there is one exception, that is, The Shawshank Redemption. This movie was considered a box office flop when it was released in 1944, where its initial box office earned only $16 million. Despite this disappointment, the movie performed successfully by shipping VHS rental copies across the U.S., obtaining a much larger audience than it ever did in its box office opening. Although its success wasn’t immediate, word of mouth spread as the movie became a [beloved and popular film.] (https://en.wikipedia.org/wiki/The_Shawshank_Redemption#:~:text=While%20The%20Shawshank%20Redemption%20received,1997%2C%20further%20increasing%20its%20popularity.) 
+
+Continuing with our data validation, we’ll now choose 3 to 5 movies with large numbers of IMDb votes yet low success scores and confirm that they are indeed of low quality. Shown below, our results are indeed low quality. 
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+#| code-fold: true
+#| code-summary: "Click to view code"
+
+poor_performance_movies <- TITLE_RATINGS_FINAL |>
+  arrange(success_score, desc(numVotes)) |>
+  select(primaryTitle, averageRating, numVotes, success_score, startYear) |>
+  head(5)
+
+colnames(poor_performance_movies) <- c('Movie Title', 'Avg Rating', 'Number of Votes', 'Success Score', 'Year Released')
+poor_performance_movies |>
+  DT::datatable()
+
+```
+
+Additionally, we’ll choose a prestigious actor director and confirm that they have many projects with high scores based on our success metric. For this, I’ll test actress Meryl Streep. Shown below, we can see Streep’s various works, many of which performed well with high success scores.
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+#| code-fold: true
+#| code-summary: "Click to view code"
+
+streep_projects <- NAME_BASICS |>
+  filter(primaryName == 'Meryl Streep') |>
+  left_join(TITLE_PRINCIPALS, by = c('nconst' = 'nconst')) |>
+  left_join(TITLE_RATINGS_FINAL, by = c('tconst' = 'tconst')) |>
+  select(tconst, primaryTitle, success_score, averageRating) |>
+  drop_na() |>
+  arrange(desc(success_score)) |>
+  select(primaryTitle, averageRating, success_score)
+
+colnames(streep_projects) <- c('Movie Title', 'Avg Rating', 'Success Score')
+streep_projects |>
+  DT::datatable()
+
+```
+
+And in the spirit of Halloween and all things spooky, I'll test [5 horror movies that have won Oscars] (https://www.fangoria.com/oscar-winning-horror-movies/#:~:text=The%20Silence%20of%20the%20Lambs%20(1991)&text=Jonathan%20Demme%27s%20The%20Silence%20of,Tom%20Fleischman%20and%20Christopher%20Newman.) in the past as my next “spot check” validation. The Oscars are widely considered to be one of the most prestigious awards in the film industry, so we should expect to see these award-winning horror films to have high success scores. Familiar titles shown below prove this to be true.
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+#| code-fold: true
+#| code-summary: "Click to view code"
+horror_films <- c('Alien', 'The Exorcist', 'Sleepy Hollow', 'The Silence of the Lambs', 'Beetlejuice')
+  
+horror_awards <- TITLE_RATINGS_FINAL |>
+  filter(primaryTitle %in% horror_films) |>
+  select(primaryTitle, averageRating, numVotes, success_score, startYear)
+
+colnames(horror_awards) = c('Movie Title', 'Average Rating', "Number of Votes", 'Success Score', 'Year of Release')
+horror_awards |>
+  DT::datatable()
+
+```
+
+Lastly, we’ll come up with a numerical threshold for a project deemed to be successful, which will be the 70th percentile. In other words, movies with success scores higher than 70% of all success score values are determined to be “solid” or better. 
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+#| code-fold: true
+#| code-summary: "Click to view code"
+threshold <- quantile(TITLE_RATINGS_FINAL$success_score, 0.7, na.rm = TRUE)
+
+Solid_Movies <- TITLE_RATINGS_FINAL |>
+  filter(success_score > quantile(TITLE_RATINGS_FINAL$success_score, 0.7, na.rm = TRUE)) |>
+  select(primaryTitle, averageRating, numVotes, success_score, startYear, genres)
+
+Solid_Movies |>
+  DT::datatable()
+
+```
+
+# Examining Success by Genre & Decade
+
+Now that we have a working proxy for success, it’s time to look at trends in success over time. To begin, let’s take a look at the genre with the most successes in each decade. Shown below, we can see that drama earns the most successes. Because many titles are recorded to have multiple genres, it’s very likely that there is more to be said about these drama titles. For example, dramas that also contain romance or action. 
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+#| code-fold: true
+#| code-summary: "Click to view code"
+successful_genre <- Solid_Movies |>
+  separate_longer_delim(genres, ',') |>
+  mutate(decade = (floor(startYear / 10)) * 10) |>
+  group_by(decade, genres) |>
+  summarize(movie_count = n()) |>
+  ungroup() |>
+  group_by(decade) |>
+  slice_max(movie_count, n = 1) |>
+  ungroup()
+
+colnames(successful_genre) = c('Decade', 'Genre', 'Movie Count')
+successful_genre |>
+  DT::datatable()
+
+successful_genre_plot <- ggplot(successful_genre, aes(x = Decade, y = `Movie Count`, fill = Genre)) +
+  geom_col() +
+  xlab('Decade') +
+  ylab('Number of Movies') +
+  theme_bw() +
+  scale_fill_brewer(type = 'qual', palette=4) +
+  ggtitle('Most Successful Movie Genre by Decade')
+  
+successful_genre_plot
+
+```
+
+To dig deeper into these genres, let’s take a look at genres that consistently have the most successes over time. Because IMDb lists 31 movie genres in total, we'll just look at the top 10 since it'll be difficult to grasp everything visually. Unsurprisingly, drama is a prevalent genre that continues to thrive throughout the decades, however it’s also worth mentioning that comedy and action genres have also been growing successful. We’ll keep this information in mind as we progress further.
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+#| code-fold: true
+#| code-summary: "Click to view code"
+genre_success_by_decade <- Solid_Movies |>
+  separate_longer_delim(genres, ',') |>
+  mutate(decade = (floor(startYear / 10)) * 10) |>
+  group_by(decade, genres) |>
+  summarize(movie_count = n()) |>
+  ungroup() |>
+  group_by(decade) |>
+  slice_max(movie_count, n = 10, with_ties = FALSE) |>
+  mutate(movies_cumulative = cumsum(movie_count)) |>
+  ungroup() |>
+  arrange(decade, movies_cumulative)
+
+# It's easier to visualize this output below:
+
+genre_success_by_decade_plot <- ggplot(genre_success_by_decade, aes(x = decade, 
+                                y = movie_count, color = genres)) +
+  geom_point() +
+  xlab('Decade') +
+  ylab('Number of Movies') +
+  geom_line() +
+  theme_bw() +
+  scale_color_brewer(type = 'qual', palette = 2) +
+  ggtitle('Successful Movie Genres by Decade Accumulated Over Time')
+
+genre_success_by_decade_plot
+
+```
+
+In more recent years since 2010, we can see the genres shown below with the most successes. Again, drama proves itself to be the leading genre with most successes. Yet it’s crucial to consider that it’s possible these genres only have a large number of successes because there are many productions in that genre. In other words, drama may be an over saturated genre in the entertainment industry. 
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+#| code-fold: true
+#| code-summary: "Click to view code"
+successes_2010 <- Solid_Movies |>
+  separate_longer_delim(genres, ',') |>
+  mutate(decade = (floor(startYear / 10)) * 10) |>
+  filter(decade >= 2010) |>
+  group_by(genres) |>
+  summarize(movie_count = n()) |>
+  slice_max(movie_count, n = 10) |>
+  arrange(desc(movie_count))
+
+successes_2010_plot <- ggplot(successes_2010, aes(x = genres, y = movie_count, fill = genres)) +
+  geom_col() +
+  xlab('Genre') +
+  ylab('Number of Movies') +
+  theme_bw() +
+  scale_fill_brewer(type = 'qual', palette=8) + 
+  ggtitle('Count of Successful Movies by Genre Since 2010')
+
+successes_2010_plot
+
+```
+
+As we’ve mentioned earlier, many of these drama titles are intertwined with many other genres such as action, adventure, comedy, and sci-fi. We can see this in popular movies released in 2010 onward as most titles fall under more than just one category. Keeping this collection of observations in mind, I’ve decided to select action intertwined with sci-fi and adventure for my upcoming movie project remake.
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+#| code-fold: true
+#| code-summary: "Click to view code"
+genres_recent_years <- Solid_Movies |>
+  filter(startYear >= 2010) |>
+  arrange(desc(startYear), desc(success_score)) |>
+  select(primaryTitle, startYear, genres, success_score)
+
+colnames(genres_recent_years) <- c('Movie Title', 'Year of Release', 'Genres', 'Success Score')
+genres_recent_years |>
+  DT::datatable(caption = 'Genres of Successful Movies Made in 2010 & Onward')
+
+```
+
+# Finding Successful Personnel in the Genres
+
+In producing my project remake, I’ve decided to work with director David Leitch, who is an American filmmaker that frequently works in action, stunts, and other genres. Take a look at some of his projects and their success scores. His strong background in action films allowed him to direct successful action-packed movies such as Atomic Blonde and Deadpool 2, all of which include elaborate fight scenes, shootouts, and car chases. Surely, David Leitch proves to be a competent, skilled director in this genre.
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+#| code-fold: true
+#| code-summary: "Click to view code"
+
+leitch <- NAME_BASICS |>
+  filter(primaryName == 'David Leitch')
+
+leitch_movies <- TITLE_PRINCIPALS |>
+  filter(nconst == 'nm0500610') |>
+  left_join(TITLE_RATINGS, join_by(tconst == tconst)) |>
+  left_join(TITLE_BASICS, join_by(tconst == tconst)) |>
+  filter(category == 'director' & titleType == 'movie') |>
+  arrange(desc(averageRating)) |>
+  select(primaryTitle)
+
+leitch_movies_final <- leitch_movies |>
+  left_join(Solid_Movies, join_by(primaryTitle == primaryTitle)) |>
+  arrange(desc(success_score))
+
+leitch_movies_final_plot <- ggplot(leitch_movies_final, aes(x = primaryTitle, y = success_score)) +
+  geom_col(fill = 'darkseagreen3') +
+  xlab('Movie Title') +
+  ylab('Success Score') +
+  theme_bw() +
+  ggtitle("David Leitch's Directed Movies With Success Scores")
+
+leitch_movies_final_plot
+
+```
+
+In addition to David Leitch, I think Ryan Reynolds and Chris Pratt would be great actors to anchor this project of mine. Similar to Leitch, both Reynolds and Pratt have played major roles in successful movies such as Deadpool and Deadpool 2, and Guardians of the Galaxy, respectively; all of which are classified as action, adventure, and comedy. Not only this, but Reynolds has also worked with Leitch in the past in their making of Deadpool 2, making this a great opportunity to balance action with a little bit of humor.
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+#| code-fold: true
+#| code-summary: "Click to view code"
+
+actor_nconst <- NAME_BASICS |>
+  filter(primaryName == 'Ryan Reynolds' | primaryName == 'Chris Pratt') |>
+  select(nconst, primaryName, knownForTitles) |>
+  slice_head(n = 2) |>
+  separate_longer_delim(knownForTitles, ',') |>
+  left_join(TITLE_BASICS, join_by(knownForTitles == tconst))
+
+actor_movies <- actor_nconst |>
+  left_join(Solid_Movies, join_by(primaryTitle == primaryTitle)) |>
+  arrange(desc(success_score)) |>
+  select(primaryName, primaryTitle, startYear.x, genres.x, success_score)
+
+colnames(actor_movies) <- c('Actor', 'Movie Title', 'Year of Release', 'Genres', 'Success Score')
+
+actor_movies |>
+  DT::datatable()
+
+```
+
+# Nostalgia & Remakes
+
+For my project, I’m choosing to remake the 1981, action/sci-fi film, [Escape from New York] (https://en.wikipedia.org/wiki/Escape_from_New_York). With an average rating of 7.1 and roughly over 160K votes, I believe this movie would be a great opportunity to remake given that it has not been remade yet.
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+#| code-fold: true
+#| code-summary: "Click to view code"
+
+escape_ny <- TITLE_BASICS |>
+  filter(primaryTitle == 'Escape from New York') |>
+  left_join(TITLE_RATINGS, join_by(tconst == tconst)) |>
+  select(primaryTitle, startYear, averageRating, numVotes) |>
+  slice(1)
+
+colnames(escape_ny) <- c('Movie Title', 'Year of Release', 'Average Rating', 'Number of Votes')
+escape_ny |>
+  DT::datatable()
+
+```
+
+Of course, however, there are quite a few legal matters at hand. A select few actors, directors, and writers are still alive since this movie was made just over 40 years ago. This would prompt me to contact our legal department to ensure our chances of securing the rights to our project. 
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+#| code-fold: true
+#| code-summary: "Click to view code"
+
+# Derive tconst of movie Escape from New York
+escape_ny_tconst <- TITLE_BASICS |>
+  filter(primaryTitle == 'Escape from New York') |>
+  select(tconst) |>
+  slice(1)
+
+# tconst = tt0082340
+
+escape_ny_members <- TITLE_PRINCIPALS |>
+  filter(tconst == 'tt0082340') |>
+  left_join(NAME_BASICS, join_by(nconst == nconst)) |>
+  select(primaryName, birthYear, deathYear, primaryProfession)
+
+colnames(escape_ny_members) <- c('Name', 'Birth Year', 'Death Year (leave blank if not applicable)', 'Profession(s)')
+escape_ny_members |>
+  DT::datatable()
+
+```
+
+# Escape from New York: Remaking of a Classic
+
 
