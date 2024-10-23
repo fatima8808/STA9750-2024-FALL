@@ -2,11 +2,13 @@
 title: "The Business of Show Business: A Deep Dive into the Film Industry"
 --- 
 Fatima W.  |  10/18/2024
+
 ![Theatre in London, Photo by Rawpixel under Creative Commons](movie.jpg)
+
 What comes to mind when you’re picking a movie to watch? Do you look for a certain genre, actors/actresses, or directors/producers? There’s hundreds of thousands of movies that exist, and there’s thousands more to be made. One important fact about the entertainment industry is that its consumers have an insatiable demand for content – but not just any content. Surely, there are thousands of lesser known films/television shows that flopped or didn’t receive the recognition it may have deserved. At the same time, there are hundreds of movies deemed successful in their own ways, whether it’s due to earned box office sales, critic reviews, award nominations, or average rating. With that being said, what determines the success of a movie? The motivation of this project is to not only understand what makes a film successful, but to develop a non-financial success metric to be used in deciding what kind of movie should be remade, and how. So grab some popcorn and get comfy, you’re in for a treat!
 
 # The Data Explained
-To begin the analysis, we’ll be using a collection of non-commercial datasets from IMDb, the Internet Movie Database that provides information on millions of films/television shows. These databases include information about movies/TV series, the cast and crew members, average ratings submitted by users, number of people who have rated these films, and more. More detailed information can be found [here,] (https://developer.imdb.com/non-commercial-datasets/) however I’ve included a mapped graphic to help visualize the breakdown of each dataset I’ll be using in conjunction with one another. This mapping will prove to be useful to refer to when analyzing the coding portions in this analysis.
+To begin the analysis, we’ll be using a collection of non-commercial datasets from IMDb, the Internet Movie Database that provides information on millions of films/television shows. These databases include information about movies/TV series, the cast and crew members, average ratings submitted by users, number of people who have rated these films, and more. More detailed information can be found [here,](https://developer.imdb.com/non-commercial-datasets/) however I’ve included a mapped graphic to help visualize the breakdown of each dataset I’ll be using in conjunction with one another. This mapping will prove to be useful to refer to when analyzing the coding portions in this analysis.
 
 ![Visual Mapping of Data Sets](database_mapping.jpg)
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
@@ -101,29 +103,24 @@ NAME_BASICS <- NAME_BASICS |>
   mutate(birthYear = as.numeric(birthYear),
          deathYear = as.numeric(deathYear))
 
-glimpse(TITLE_BASICS)
 TITLE_BASICS <- TITLE_BASICS |>
   mutate(isAdult = as.logical(isAdult),
          startYear = as.numeric(startYear),
          endYear = as.numeric(endYear),
          runtimeMinutes = as.numeric(runtimeMinutes))
 
-glimpse(TITLE_EPISODES)
 TITLE_EPISODES <- TITLE_EPISODES |>
   mutate(seasonNumber = as.numeric(seasonNumber),
          episodeNumber = as.numeric(episodeNumber))
 
-glimpse(TITLE_RATINGS)
 TITLE_RATINGS <- TITLE_RATINGS |>
   mutate(averageRating = as.numeric(averageRating),
          numVotes = as.numeric(numVotes))
 
-glimpse(TITLE_CREW)
 TITLE_CREW <- TITLE_CREW |>
   mutate(tconst = as.character(tconst),
          directors = as.character(directors))
 
-glimpse(TITLE_PRINCIPALS)
 TITLE_PRINCIPALS <- TITLE_PRINCIPALS |>
   mutate(job = as.character(job),
          characters = as.character(characters))
@@ -148,7 +145,7 @@ title_counts |>
 
 ```
 
-With this many titles across various types of title types, I wanted to know who is the oldest living person in our data set and what their profession is. One important thing to consider, however, is within the `NAME_BASICS` data set, there is a double meaning to the NA values in the `deathYear` column. These NA values may indicate that the year of death is “unknown” or “still alive/not dead yet.” According to the Guinness World Records, the oldest person alive in the world is [Tomiko Itooka] (https://www.guinnessworldrecords.com/world-records/84549-oldest-person-living), who was born in 1908. Therefore, to approach this finding, we’ll filter out people who were born in 1908 onward and NA values. As a result, the oldest living person in our data set is Angel Acciaresi, who was an assistant director, director, and writer. Seeing this person’s age, it’s a nice reminder and interesting to think about how long the entertainment industry has existed and how far it’s come. 
+With this many titles across various types of title types, I wanted to know who is the oldest living person in our data set and what their profession is. One important thing to consider, however, is within the `NAME_BASICS` data set, there is a double meaning to the NA values in the `deathYear` column. These NA values may indicate that the year of death is “unknown” or “still alive/not dead yet.” According to the Guinness World Records, the oldest person alive in the world is [Tomiko Itooka](https://www.guinnessworldrecords.com/world-records/84549-oldest-person-living), who was born in 1908. Therefore, to approach this finding, we’ll filter out people who were born in 1908 onward and NA values. As a result, the oldest living person in our data set is Angel Acciaresi, who was an assistant director, director, and writer. Seeing this person’s age, it’s a nice reminder and interesting to think about how long the entertainment industry has existed and how far it’s come. 
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 #| code-fold: true
@@ -169,7 +166,7 @@ oldest_person |>
 
 # TV Series Observations
 
-I’m interested in uncovering some insights about TV series productions and their ratings given a baseline of at least 200,000 IMDb ratings. There exists one TV Episode in this data set that fits this criteria, that is, the episode Ozymandias from the American crime drama television series, Breaking Bad. In fact, this episode is ranked the number one [“Best TV Episodes”] (https://en.wikipedia.org/wiki/Ozymandias_(Breaking_Bad)#:~:text=%22Ozymandias%22%20frequently%20tops%20polls%20of,'Best%20TV%20Episodes'%20ranking.) for its perfect 10/10 rating. 
+I’m interested in uncovering some insights about TV series productions and their ratings given a baseline of at least 200,000 IMDb ratings. There exists one TV Episode in this data set that fits this criteria, that is, the episode Ozymandias from the American crime drama television series, Breaking Bad. In fact, this episode is ranked the number one [“Best TV Episodes”](https://en.wikipedia.org/wiki/Ozymandias_(Breaking_Bad)#:~:text=%22Ozymandias%22%20frequently%20tops%20polls%20of,'Best%20TV%20Episodes'%20ranking.) for its perfect 10/10 rating. 
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 #| code-fold: true
@@ -274,12 +271,17 @@ title_ratings_test2 |>
 This method may have been satisfactory, however I still felt like there is a better way to develop a success metric because I assumed that average rating and number of votes should be weighed equally. Although our data sets contain all votes for each title, I felt that not all votes have the same impact/weight on the final rating. During this process, I wanted to remain mindful of the possibility that people will normally rate and vote on titles that they have strong feelings for, whether they are good or bad. For example, a movie may have been so horrible for someone that they went out of their way to submit a low rating, whereas someone who may have felt indifferent to a movie didn’t bother to submit a rating at all. Had they submitted one though, maybe it would’ve been an average rating like 5/10. I gave one more try where I used the weighted average method and decided to use a benchmark of 10,000 votes as the minimum number of votes that makes a movie successful. To put it into a simple mathematical formula: 
 
 > Using weighted average to find the success score
+>
 > Success Score = [(R * v) + (C * m)] / (v + m)
 >
 > where
+>
 > R = average rating of each title
+>
 > v = number of votes of each title
+>
 > C = the mean rating of all titles
+>
 > m = minimum number of votes that considers a movie to be successful (10,000 votes)
 
 This ended up being my chosen method, where I also used log in calculating the number of votes.
@@ -318,7 +320,7 @@ top_10movies |>
 
 ```
 
-The majority of the movies listed above are indeed box office successes, however there is one exception, that is, The Shawshank Redemption. This movie was considered a box office flop when it was released in 1944, where its initial box office earned only $16 million. Despite this disappointment, the movie performed successfully by shipping VHS rental copies across the U.S., obtaining a much larger audience than it ever did in its box office opening. Although its success wasn’t immediate, word of mouth spread as the movie became a [beloved and popular film.] (https://en.wikipedia.org/wiki/The_Shawshank_Redemption#:~:text=While%20The%20Shawshank%20Redemption%20received,1997%2C%20further%20increasing%20its%20popularity.) 
+The majority of the movies listed above are indeed box office successes, however there is one exception, that is, The Shawshank Redemption. This movie was considered a box office flop when it was released in 1944, where its initial box office earned only $16 million. Despite this disappointment, the movie performed successfully by shipping VHS rental copies across the U.S., obtaining a much larger audience than it ever did in its box office opening. Although its success wasn’t immediate, word of mouth spread as the movie became a [beloved and popular film.](https://en.wikipedia.org/wiki/The_Shawshank_Redemption#:~:text=While%20The%20Shawshank%20Redemption%20received,1997%2C%20further%20increasing%20its%20popularity.) 
 
 Continuing with our data validation, we’ll now choose 3 to 5 movies with large numbers of IMDb votes yet low success scores and confirm that they are indeed of low quality. Shown below, our results are indeed low quality. 
 
@@ -358,7 +360,7 @@ streep_projects |>
 
 ```
 
-And in the spirit of Halloween and all things spooky, I'll test [5 horror movies that have won Oscars] (https://www.fangoria.com/oscar-winning-horror-movies/#:~:text=The%20Silence%20of%20the%20Lambs%20(1991)&text=Jonathan%20Demme%27s%20The%20Silence%20of,Tom%20Fleischman%20and%20Christopher%20Newman.) in the past as my next “spot check” validation. The Oscars are widely considered to be one of the most prestigious awards in the film industry, so we should expect to see these award-winning horror films to have high success scores. Familiar titles shown below prove this to be true.
+And in the spirit of Halloween and all things spooky, I'll test [5 horror movies that have won Oscars](https://www.fangoria.com/oscar-winning-horror-movies/#:~:text=The%20Silence%20of%20the%20Lambs%20(1991)&text=Jonathan%20Demme%27s%20The%20Silence%20of,Tom%20Fleischman%20and%20Christopher%20Newman.) in the past as my next “spot check” validation. The Oscars are widely considered to be one of the most prestigious awards in the film industry, so we should expect to see these award-winning horror films to have high success scores. Familiar titles shown below prove this to be true.
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 #| code-fold: true
@@ -560,7 +562,7 @@ actor_movies |>
 
 # Nostalgia & Remakes
 
-For my project, I’m choosing to remake the 1981, action/sci-fi film, [Escape from New York] (https://en.wikipedia.org/wiki/Escape_from_New_York). With an average rating of 7.1 and roughly over 160K votes, I believe this movie would be a great opportunity to remake given that it has not been remade yet.
+For my project, I’m choosing to remake the 1981, action/sci-fi film, [Escape from New York](https://en.wikipedia.org/wiki/Escape_from_New_York). With an average rating of 7.1 and roughly over 160K votes, I believe this movie would be a great opportunity to remake given that it has not been remade yet.
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 #| code-fold: true
@@ -578,7 +580,7 @@ escape_ny |>
 
 ```
 
-Of course, however, there are quite a few legal matters at hand. A select few actors, directors, and writers are still alive since this movie was made just over 40 years ago. This would prompt me to contact our legal department to ensure our chances of securing the rights to our project. 
+Of course, however, there are quite a few legal matters at hand. A select few actors, directors, and writers are still alive since this movie was made just over 40 years ago. This would prompt me to contact our legal department to ensure our chances of securing the rights to our project. Now, it's finally time to piece everything together.
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 #| code-fold: true
@@ -605,4 +607,23 @@ escape_ny_members |>
 
 # Escape from New York: Remaking of a Classic
 
+>*From director David Leitch, the visionary mind behind Bullet Train and Atomic Blonde2…*
+>
+>*And from Ryan Reynolds, highly praised star of Deadpool 2…*
+>
+>*And from Chris Pratt, Hollywood icon of action-adventure hit Guardians of the Galaxy…*
+>
+>*Comes the timeless tail, Escape from New York…*
+>
+>*A journey of survival, betrayal, and redemption…*
+>
+>*One man, one mission, one chance…to survive a world in chaos*
+>
+>*Escape from New York. Coming soon to a theater near you.*
+
+We propose a remake of the classic action-packed film, *Escape from New York*, starring Ryan Reynolds as Snake Plissken and Chris Pratt as Romero. With David Leitch directing the film, we firmly believe this remake will attract and satisfy a large audience while producing great returns. The analysis above explains how drama titles have successfully won large audiences over the years, however, this genre has potential to become oversaturated, if not already. We want to attract and appeal to watchers who enjoy action, adventure, and slight comedy especially given that the market for action films has been increasing in recent decades. In fact, action movies make up roughly 35% of movies made since 2010 that are considered successful. David Leitch has an excellent background in directing films in these genres, with over 80% of movies he’s directed being successes and massive hits. 
+
+Similarly, Ryan Reynolds and Chris Pratt have proven their capabilities in main leading roles in movies they’ve worked in recently, which are also great successes. Reynolds, who has played a major role in the successful action/adventure film Deadpool 2, will bring his wittiness and charm in playing the role of Snake Plissken. He’ll work alongside Chris Pratt, known for his lead role in the highly rated movie/series, Guardians of the Galaxy, making their combined talents a dynamic power duo. 
+
+As we continue to live in a society where many of us feel trapped as political and social issues continue on with no end in sight, a remake of *Escape from New York* is an opportunity for us to portray resonating messages with those who feel similarly. We truly believe that with riveting action, iconic actors, and powerful messages, our modern take has much potential and is primed for success.
 
