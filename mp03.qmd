@@ -5,7 +5,7 @@ Fatima W.  |  11/11/2024
 
 ![Election Day 2020 - Voters in Des Moines precincts 43, 61 and 62 cast their ballots at Roosevelt High School. Taken by Phil Roeder on Flickr Creative Commons usage.](voting.jpg)
 
-With Election Day having just passed, the U.S. Electoral Voting system is once again up for debate.The [US Constitution](https://constitution.congress.gov/constitution/) sets the basic rules of electing the President in [Section 1 of Article II](https://constitution.congress.gov/constitution/article-2/#article-2-section-1-clause-2) since its establishment in 1787. The Electoral College is a voting system that determines the winner of an election through state-assigned electors, rather than the popular vote of the people. Though this system has existed for hundreds of years and the details have changed a bit over time with amendment, statute, and technology improvements, the allocation of electoral votes remains the same. The way it works is each state receives R + 2 electoral college votes, where R is the number of Representatives that state has in the US House of Representatives. Put simply, votes are awarded based on the states’ congressional representation, and the winner is justified by the “winner-takes-all” approach which means a presidential candidate who will win the majority in a state will be awarded all of its electoral votes, regardless of the margin. This brings us to the purpose of this project, which is to analyze historical presidential and congressional voting data and investigate whether it’s true that the US Electoral College systematically biased election results. More specifically, we’ll be taking a look at alternative methods to allocate electoral votes, such as: 
+With Election Day having just passed, the U.S. Electoral Voting system is once again up for debate. The [US Constitution](https://constitution.congress.gov/constitution/) sets the basic rules of electing the President in [Section 1 of Article II](https://constitution.congress.gov/constitution/article-2/#article-2-section-1-clause-2) since its establishment in 1787. The Electoral College is a voting system that determines the winner of an election through state-assigned electors, rather than the popular vote of the people. Though this system has existed for hundreds of years and the details have changed a bit over time with amendment, statute, and technology improvements, the allocation of electoral votes remains the same. The way it works is each state receives R + 2 electoral college votes, where R is the number of Representatives that state has in the US House of Representatives. Put simply, votes are awarded based on the states’ congressional representation, and the winner is justified by the “winner-takes-all” approach which means a presidential candidate who will win the majority in a state will be awarded all of its electoral votes, regardless of the margin. This brings us to the purpose of this project, which is to analyze historical presidential and congressional voting data and investigate whether it’s true that the US Electoral College systematically biased election results. More specifically, we’ll be taking a look at alternative methods to allocate electoral votes, such as: 
 
 1. State-Wide Winner-Take-All
 2. District-Wide Winner-Take-All + State-Wide “At Large” Votes
@@ -497,13 +497,13 @@ chloropleth_2000 <- ggplot(combined_ecv_shp,
   scale_fill_brewer(palette = "Set1", direction = -1, labels = c("Bush", "Gore")) +
   coord_sf(xlim = c(-130, -60), ylim = c(20, 50), expand = FALSE) +
   theme(
-    axis.text = element_blank(),    # Remove axis text (latitude and longitude)
-    axis.ticks = element_blank(),   # Remove axis ticks
-    axis.title = element_blank(),   # Remove axis titles
-    panel.grid.major = element_blank(),  # Remove major grid lines
-    panel.grid.minor = element_blank(),  # Remove minor grid lines
-    panel.background = element_blank(),  # Remove background
-    plot.background = element_blank()    # Remove background of plot
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    axis.title = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.background = element_blank(),
+    plot.background = element_blank()
   )
 
 
