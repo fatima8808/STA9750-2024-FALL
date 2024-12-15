@@ -1,0 +1,9 @@
+---
+title: "The Impact of Socioeconomic Factors on New York City’s Public School Districts in Student’s Education"
+format:
+  html:
+    toc: true
+    html-math-method: katex
+    css: styles.css
+--- 
+Fatima W.  |  12/12/2024
