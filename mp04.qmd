@@ -294,6 +294,8 @@ longterm_avgs <- longrun_monthly_avg |>
 
 ```
 
+
+
 Shown above are the long-term monthly averages, which will be useful further into our analysis when we create and modify a simulation to project an employee’s pension benefit (TRS) or withdrawal amount (ORP) from retirement until death. We may also find the correlation of our factors below:
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
@@ -413,21 +415,23 @@ recession_plot <- ggplot(equity_bond_recession, aes(x = date)) +
 
 We’ll now move forward in performing a historical comparison of TRS and ORP. Given our data, we’ll implement the following TRS and ORP formulas and compare the value of each plan for the first month of retirement. For purposes of this project, we’ll assume our hypothetical employee joined CUNY in the first month of our historical data (March 2008) and retired from CUNY at the end of the final month of our data (October 2024). We’ll set their starting annual salary to $57,000, assuming the employee is starting out as an assistant professor. The formulas for TRS and ORP will be applied as follows: 
 
-> **TRS** 
-> The retirement benefit is calculated based on the Final Average Salary (FAS)of the employee, which is computed based on the final three years salary. 
+> ## **TRS**
+> 
+> The retirement benefit is calculated based on the Final Average Salary (FAS) of the employee, which is computed based on the final three years salary. 
 > 
 > If `N` is the number of years served, the annual retirement benefit is: 
 >
-> 1.67% x FAS x N if N < 20
+> 1.67% x `FAS` x `N` if `N` < 20
 >
-> 1.75% x FAS x N if N = 20
+> 1.75% x `FAS` x `N` if `N` = 20
 >
-> (35% + 2% x (N - 20)) x FAS if N > 20
+> (35% + 2% x (`N` - 20)) x `FAS` if `N` > 20
 > 
 > Additionally, the benefit is increased annually by 50% of the CPI, rounded up to the nearest tenth of a percent: e.g., a CPI of 2.9% gives an inflation adjustment of 1.5%. The benefit is capped below at 1% and above at 3%, so a CPI of 10% leads to a 3% inflation adjustment while a CPI of 0% leads to a 1% inflation adjustment.
 
 
-> **ORP**
+> ## **ORP**
+>
 > We’ll assume that the ORP participants invest in a [Fidelity Freedom Fund](https://www.fidelity.com/mutual-funds/fidelity-fund-portfolios/freedom-funds) with the following asset allocation:
 > Age 25 to Age 49:
 > - 54% US Equities
