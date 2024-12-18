@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -68,7 +102,6 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
-<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-fixed">
@@ -92,8 +125,26 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#gathering-the-data" id="toc-gathering-the-data" class="nav-link" data-scroll-target="#gathering-the-data">Gathering the Data</a></li>
+  <li><a href="#cleaning-the-data" id="toc-cleaning-the-data" class="nav-link" data-scroll-target="#cleaning-the-data">Cleaning the Data</a></li>
+  <li><a href="#exploring-the-data-how-might-these-socioeconomic-factors-impact-students-academic-achievements" id="toc-exploring-the-data-how-might-these-socioeconomic-factors-impact-students-academic-achievements" class="nav-link" data-scroll-target="#exploring-the-data-how-might-these-socioeconomic-factors-impact-students-academic-achievements">Exploring the Data: How might these socioeconomic factors impact students’ academic achievements?</a>
+  <ul class="collapse">
+  <li><a href="#state-wide-exams-ela-math" id="toc-state-wide-exams-ela-math" class="nav-link" data-scroll-target="#state-wide-exams-ela-math">State Wide Exams: ELA &amp; Math</a></li>
+  <li><a href="#regents-exams" id="toc-regents-exams" class="nav-link" data-scroll-target="#regents-exams">Regents Exams</a></li>
+  </ul></li>
+  <li><a href="#how-do-our-socioeconomic-variables-correlate-to-each-student-academic-metric" id="toc-how-do-our-socioeconomic-variables-correlate-to-each-student-academic-metric" class="nav-link" data-scroll-target="#how-do-our-socioeconomic-variables-correlate-to-each-student-academic-metric">How do our socioeconomic variables correlate to each student academic metric?</a></li>
+  <li><a href="#what-patterns-appear-when-comparing-academic-performance-across-schools-in-wealthier-and-lower-income-neighborhoods" id="toc-what-patterns-appear-when-comparing-academic-performance-across-schools-in-wealthier-and-lower-income-neighborhoods" class="nav-link" data-scroll-target="#what-patterns-appear-when-comparing-academic-performance-across-schools-in-wealthier-and-lower-income-neighborhoods">What patterns appear when comparing academic performance across schools in wealthier and lower-income neighborhoods?</a></li>
+  <li><a href="#linear-regression-t-test-creating-a-predictor-model" id="toc-linear-regression-t-test-creating-a-predictor-model" class="nav-link" data-scroll-target="#linear-regression-t-test-creating-a-predictor-model">Linear Regression t-Test &amp; Creating a Predictor Model</a></li>
+  <li><a href="#limitations-conclusion-future-outlook" id="toc-limitations-conclusion-future-outlook" class="nav-link" data-scroll-target="#limitations-conclusion-future-outlook">Limitations, Conclusion &amp; Future Outlook</a></li>
+  <li><a href="#citations" id="toc-citations" class="nav-link" data-scroll-target="#citations">Citations</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -118,8 +169,1555 @@ ul.task-list li input[type="checkbox"] {
 
 
 <p>Fatima W. | 12/12/2024</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="final_proj_image.jpg" class="img-fluid figure-img"></p>
+<figcaption>Nov 23, 2020 Homework Hub in Chinatown, supporting NYC Students. Photo provided by Street Lab.</figcaption>
+</figure>
+</div>
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>With nearly 1 million enrolled students across over 1,800 public schools, New York City remains the largest public school system within the US. Managed by the NYC Department of Education (DOE), the system runs multiple public schools, charter schools, and specialized institutions to support students with specialized needs and/or unique talents. The city’s diverse population comes with varying levels of income and poverty, and a wide spectrum of cultural/ethnic and social backgrounds.</p>
+<p>Meanwhile, NYC public schools continue to face challenges regarding student academic excellence and educational inequities. If we take a look at previous literature in research, findings show present <a href="https://www.brookings.edu/articles/boys-left-behind-education-gender-gaps-across-the-us/">education gaps by gender</a> across the US, as well as incorporating better <a href="https://www.brookings.edu/articles/class-size-what-research-says-and-what-it-means-for-state-policy/">student-to-teacher ratios</a> can improve educational outcomes. In addition, many studies have been performed where findings show the impact of socioeconomic factors on a student’s academic performance. Research done by the National Library of Medicine explains how <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC2528798/#abstract1">poverty</a> and <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3208322/">income</a> may contribute to students’ poor educational outcomes.</p>
+<p>This brings us to the purpose of this analysis. While we understand that significant research shows financial and demographic inequalities having an impact, our analysis intends to dive deeper into figuring out which selection of factors, and to what extent, impact NYC’s students. In this section, we’ll go over how socioeconomic factors play into NYC’s students’ academic performance, specifically on the school district level. Analyses have also been formed on student demographics, school characteristics, and school funding which can be accessed through these hyperlinks, as well as the end of the report.</p>
+</section>
+<section id="gathering-the-data" class="level1">
+<h1>Gathering the Data</h1>
+<p>We’ll be using a variety of datasets obtained from the NYC DOE Infohub, which is the official website containing historic data of student academics specifically in the five boroughs. More specifically, we’ll take a look at the English Language Arts and Math State Tests, Regent scores, and high school graduation rates roughly over the last 15 years.</p>
+<p>Each year, students in grades three through eight are required to participate in the ELA and Math end-of-year state assessments. These exams are scored on a level of 1 to 4, where:</p>
+<blockquote class="blockquote">
+<p>1 = Not Meeting Learning Standards</p>
+<p>2 = Partially Meeting Learning Standards</p>
+<p>3 = Meeting Learning Standards</p>
+<p>4 = Meeting Learning Standards with Distinction</p>
+</blockquote>
+<p>It’s also crucial to note that due to the COVID-19 pandemic, exams were not administered in 2020, and were optional for students to take in 2021. For these reasons, exam score data is not available during these years. Because our focus is at the school district level, we’ll be sure to extract data accordingly.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Click to view code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>required_libraries <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"readr"</span>, <span class="st">"tidyr"</span>, <span class="st">"dplyr"</span>, <span class="st">"ggplot2"</span>, <span class="st">"stringr"</span>,<span class="st">"sf"</span>, <span class="st">"reshape2"</span>, </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                        <span class="st">"corrplot"</span>, <span class="st">"gganimate"</span>, <span class="st">"gifski"</span>, <span class="st">"RColorBrewer"</span>, <span class="st">"ggrepel"</span>, <span class="st">"readxl"</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>                        <span class="st">"gt"</span>, <span class="st">"caret"</span>, <span class="st">"Metrics"</span>, <span class="st">"car"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (pkg <span class="cf">in</span> required_libraries) {</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(pkg, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">install.packages</span>(pkg)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(pkg, <span class="at">character.only =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">#**** ELA *****</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># SWE ELA: Function to Get City of New York Data Files from cityofnewyork URL</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>get_cony_file <span class="ot">&lt;-</span> <span class="cf">function</span>(fname, zname, FILE_URL) {</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">file.exists</span>(fname)){</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span><span class="fu">file.exists</span>(zname)){ </span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>      <span class="fu">download.file</span>(FILE_URL, <span class="at">destfile =</span> zname)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    td <span class="ot">&lt;-</span> <span class="fu">tempdir</span>();</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    zip_contents <span class="ot">&lt;-</span> <span class="fu">unzip</span>(zname, <span class="at">exdir =</span> td)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    file_path <span class="ot">&lt;-</span> <span class="fu">file.path</span>(td, fname)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>(<span class="fu">read.csv</span>(file_path))</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co"># ELA 2006-2012</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>ELA_URL_2006 <span class="ot">&lt;-</span> <span class="st">"https://data.cityofnewyork.us/api/views/9uqq-k6t8/files/6cb21873-4c19-42ab-aa31-13573b47ed45?download=true&amp;filename=2006-2012%20ELA%20Test%20Results.zip"</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>ELA_2006 <span class="ot">&lt;-</span> <span class="st">"2006-2012_ELA_Test_Results.zip"</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>ela_2006_12 <span class="ot">&lt;-</span> <span class="fu">get_cony_file</span>(<span class="st">"2006-2012_English_Language_Arts__ELA__Test_Results_-_District_-_All_Students.csv"</span>, ELA_2006, ELA_URL_2006)</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="co"># ELA 2013-2019</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>ELA_URL_2013_19 <span class="ot">&lt;-</span> <span class="st">"https://data.cityofnewyork.us/api/views/iebs-5yhr/files/a6ff1ea4-4895-4372-a2d6-bbd0b17e89a4?download=true&amp;filename=2013-2019%20ELA%20Test%20Results.zip"</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>ELA_2013_19 <span class="ot">&lt;-</span> <span class="st">"2013-2019_ELA_Test_Results.zip"</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>ela_2013_19 <span class="ot">&lt;-</span> <span class="fu">get_cony_file</span>(<span class="st">"2013-2019_English_Language_Arts__ELA__Test_Results_District_-_All_SWD_Ethnicity_Gender_Economic_Status_ELL.csv"</span>, ELA_2013_19, ELA_URL_2013_19)</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="co">#***** MATH ******</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="co"># SWE Math 2006-2012</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(<span class="st">"2006-2012_Math_Test_Results.zip"</span>)) {</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>  FILE_URL <span class="ot">&lt;-</span> <span class="st">"https://data.cityofnewyork.us/api/views/e5c5-ieuv/files/93fd3270-8d2e-47ac-878d-04d96e411168?download=true&amp;filename=2006-2012%20Math%20Test%20Results.zip"</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">download.file</span>(FILE_URL, <span class="at">destfile =</span> <span class="st">"2006-2012_Math_Test_Results.zip"</span>)</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>zip_file <span class="ot">&lt;-</span> <span class="st">"2006-2012_Math_Test_Results.zip"</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>temp_dir <span class="ot">&lt;-</span> <span class="fu">tempdir</span>()</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="fu">unzip</span>(zip_file, <span class="at">exdir =</span> temp_dir)</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="fu">file.path</span>(temp_dir, <span class="st">"2006-2012 Math Test Results"</span>, <span class="st">"2006_-_2012__Math_Test_Results_-_District_-_All_Students.csv"</span>)</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>math_2006_12 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(file_path)</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="co"># Math 2013-2023</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if the CSV file exists</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(<span class="st">"2013-2023_Math_Test_Results__Excel_files.zip"</span>)) {</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>  FILE_URL <span class="ot">&lt;-</span> <span class="st">"https://data.cityofnewyork.us/api/views/74kb-55u9/files/ca3b8584-9b64-472c-ace4-683e795c12e2?download=true&amp;filename=2013-2023%20Math%20Test%20Results%20(Excel%20files).zip"</span></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">download.file</span>(FILE_URL, <span class="at">destfile =</span> <span class="st">"2013-2023_Math_Test_Results__Excel_files.zip"</span>)</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>temp <span class="ot">&lt;-</span> <span class="fu">tempdir</span>()</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>zip_contents <span class="ot">&lt;-</span> <span class="fu">unzip</span>(<span class="st">"2013-2023_Math_Test_Results__Excel_files.zip"</span>, <span class="at">exdir =</span> temp)</span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>file_path <span class="ot">&lt;-</span> <span class="fu">file.path</span>(temp, <span class="st">"03_district-math-results-2013-2023-(public).xlsx"</span>)</span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>math_2013_23 <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(file_path, <span class="at">sheet =</span> <span class="st">"All"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>As for Regent exams, high school students, and some middle school students, must take Regents exams on a variety of subjects. Subjects include English, Algebra I, Living Environment (Biology), Geometry, Chemistry, Algebra II (Trigonometry), Physics, and Language Other Than English (LOTE). Middle school students are offered to take certain Regent exams in the 8th grade, however this determination is based on whether the middle school has an accelerated Honors program (one would find out which middle schools offer such programs <a href="https://www.schoolsaccount.nyc/">here</a> by registering their child for school enrollment). The passing score for any Regent exam is currently a 65 or higher. This threshold has been the criteria throughout all years of our analysis. Along with Regent scores, we’ll use graduation rates as another determination of students’ academic performance.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Click to view code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#***** REGENTS ******</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>dest_file <span class="ot">&lt;-</span> <span class="st">"2014-15-to-2022-23-nyc-regents-overall-and-by-category---public.xlsx"</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>regent_url <span class="ot">&lt;-</span> <span class="st">"https://infohub.nyced.org/docs/default-source/default-document-library/2014-15-to-2022-23-nyc-regents-overall-and-by-category---public.xlsx"</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># check if the file already exists</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(dest_file)) {</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">download.file</span>(regent_url, <span class="at">destfile =</span> dest_file, <span class="at">mode =</span> <span class="st">"wb"</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the "All Students" sheet from the downloaded Excel file</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>regent_data <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(dest_file, <span class="at">sheet =</span> <span class="st">"All Students"</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co">#***** GRADUATION RATES ******</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>grad_file <span class="ot">&lt;-</span> <span class="st">"2023-graduation-rates-public-district.xlsx"</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>grad_url <span class="ot">&lt;-</span> <span class="st">"https://infohub.nyced.org/docs/default-source/default-document-library/2023-graduation-rates-public-district.xlsx"</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(grad_file)) {</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">download.file</span>(grad_url, <span class="at">destfile =</span> grad_file, <span class="at">mode =</span> <span class="st">"wb"</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>grad_data <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(grad_file, <span class="at">sheet =</span> <span class="st">"All"</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>grad_file2 <span class="ot">&lt;-</span> <span class="st">"2001-2011-graduation_rates_public_district.xlsx"</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>grad_url2 <span class="ot">&lt;-</span> <span class="st">"https://infohub.nyced.org/docs/default-source/default-document-library/2001-2011-graduation_rates_public_district.xlsx"</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(grad_file2)) {</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">download.file</span>(grad_url2, <span class="at">destfile =</span> grad_file2, <span class="at">mode =</span> <span class="st">"wb"</span>)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>grad_data2 <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(grad_file2, <span class="at">sheet =</span> <span class="st">"All"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Next, we’ll obtain several datasets that originated from the United Census Bureau; this data is provided by <a href="https://data.cccnewyork.org/">Keeping Track Online CCC</a>, which is known for their vision of publishing cleaned data on children and family well-being in New York city, made available for research and data analysis. We’ll focus on the most important factors that we hypothesize will have an impact on educational outcomes, that is, <a href="https://data.cccnewyork.org/data/table/66/median-incomes#66/107/127/a/a">median household income,</a> <a href="https://data.cccnewyork.org/data/table/99/poverty#72/113/62/a/a">poverty rates</a>, <a href="https://data.cccnewyork.org/data/table/1243/educational-attainment#1243/1420/127/a/a">educational attainment rates</a>, <a href="https://data.cccnewyork.org/data/table/142/snap-food-stamps#142/226/131/a/a">NYS SNAP Benefit rates</a>, and <a href="https://data.cccnewyork.org/data/table/1260/employment-population-ratio#1260/1453/129/a/a">employment population rates</a>. Lastly, we’ll also use <a href="https://www.nyc.gov/site/planning/data-maps/open-data/districts-download-metadata.page">New York City shapefiles</a> that contain the coordinates of school districts. This will be helpful later on in visualizing changes across school districts.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Click to view code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load in all our data from Keeping Track Online</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>get_census_files <span class="ot">&lt;-</span> <span class="cf">function</span>(fname){</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  BASE_URL <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/fatima8808/STA9750-2024-FALL/main/NYC_Census_Files/"</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  fname_ext <span class="ot">&lt;-</span> <span class="fu">paste0</span>(fname, <span class="st">".csv"</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">file.exists</span>(fname_ext)){</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    FILE_URL <span class="ot">&lt;-</span> <span class="fu">paste0</span>(BASE_URL, fname_ext)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">download.file</span>(FILE_URL, </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                  <span class="at">destfile =</span> fname_ext)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>(readr<span class="sc">::</span><span class="fu">read_csv</span>(fname_ext, <span class="at">lazy=</span><span class="cn">FALSE</span>))</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>poverty_age <span class="ot">&lt;-</span> <span class="fu">get_census_files</span>(<span class="st">"poverty"</span>)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>median_incomes <span class="ot">&lt;-</span> <span class="fu">get_census_files</span>(<span class="st">"medianincome"</span>)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>educational_attainment <span class="ot">&lt;-</span> <span class="fu">get_census_files</span>(<span class="st">"edu_attainment"</span>)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>snap_foodstamps <span class="ot">&lt;-</span> <span class="fu">get_census_files</span>(<span class="st">"snap_rates"</span>)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>emp_pop_ratio <span class="ot">&lt;-</span> <span class="fu">get_census_files</span>(<span class="st">"employment_rates"</span>)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co"># NYC Shapefiles</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="fu">file.exists</span>(<span class="st">"nysd_24d.zip"</span>)){</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">download.file</span>(<span class="st">"http://s-media.nyc.gov/agencies/dcp/assets/files/zip/data-tools/bytes/nysd_24d.zip"</span>, </span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>                <span class="at">destfile=</span><span class="st">"nysd_24d.zip"</span>, <span class="at">method =</span> <span class="st">"curl"</span>)</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>td <span class="ot">&lt;-</span> <span class="fu">tempdir</span>(); </span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>zip_contents <span class="ot">&lt;-</span> <span class="fu">unzip</span>(<span class="st">"nysd_24d.zip"</span>, </span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>                      <span class="at">exdir =</span> td)</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>fname_shp <span class="ot">&lt;-</span> zip_contents[<span class="fu">grepl</span>(<span class="st">"shp$"</span>, zip_contents)]</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>nyc_sf <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(fname_shp)</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>nyc_sf <span class="ot">&lt;-</span> nyc_sf <span class="sc">|&gt;</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">school_district =</span> SchoolDist)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="cleaning-the-data" class="level1">
+<h1>Cleaning the Data</h1>
+<p>Before we can begin our exploratory analysis, we have to ensure the integrity of our datasets. Data on State Wide Exam scores is provided for years 2006 through 2019, whereas Regents Exam scores are available from 2015 to 2023. Similarly, years of data in our socioeconomic datasets run from 2006 to 2019. For these reasons, our years of focus will be from 2006 to 2019 across all datasets. However, you will see further in our analysis how we will try to predict more recent scores of Regents Exams (years 2022/23) using historical data and factors we found to have significant impact. With that said, we’ll ensure to combine all appropriate datasets and tidy up our work environment once we have all the data we need.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Click to view code: Independent Factors Cleanse</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cleansing our data for use:</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a data frame called district_mapping to add school district numbers to community neighborhoods</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>district_mapping <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">location =</span> <span class="fu">c</span>( <span class="st">"Astoria"</span>, <span class="st">"Battery Park/Tribeca"</span>, <span class="st">"Bay Ridge"</span>, <span class="st">"Bayside"</span>, <span class="st">"Bedford Park"</span>, </span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Bedford Stuyvesant"</span>, <span class="st">"Bensonhurst"</span>, <span class="st">"Borough Park"</span>, <span class="st">"Brownsville"</span>, </span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Bushwick"</span>, <span class="st">"Canarsie"</span>, <span class="st">"Central Harlem"</span>, <span class="st">"Chelsea/Clinton"</span>, </span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Concourse/Highbridge"</span>, <span class="st">"Coney Island"</span>, <span class="st">"Crown Heights North"</span>, </span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Crown Heights South"</span>, <span class="st">"East Flatbush"</span>, <span class="st">"East Harlem"</span>, <span class="st">"East New York"</span>, </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>                <span class="st">"East Tremont"</span>, <span class="st">"Elmhurst/Corona"</span>, <span class="st">"Flatbush/Midwood"</span>, <span class="st">"Flushing"</span>, </span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Fort Greene/Brooklyn Hts"</span>, <span class="st">"Fresh Meadows/Briarwood"</span>, <span class="st">"Greenwich Village"</span>, </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Howard Beach"</span>, <span class="st">"Hunts Point"</span>, <span class="st">"Jackson Heights"</span>, <span class="st">"Jamaica/St. Albans"</span>, </span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Lower East Side"</span>, <span class="st">"Manhattanville"</span>, <span class="st">"Midtown Business District"</span>, </span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Morrisania"</span>, <span class="st">"Mott Haven"</span>, <span class="st">"Murray Hill/Stuyvesant"</span>, <span class="st">"Park Slope"</span>, </span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Pelham Parkway"</span>, <span class="st">"Queens Village"</span>, <span class="st">"Rego Park/Forest Hills"</span>, </span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Ridgewood/Glendale"</span>, <span class="st">"Riverdale"</span>, <span class="st">"Sheepshead Bay"</span>, <span class="st">"South Beach"</span>, </span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>                <span class="st">"St. George"</span>, <span class="st">"Sunnyside/Woodside"</span>, <span class="st">"Sunset Park"</span>, <span class="st">"The Rockaways"</span>, </span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Throgs Neck"</span>, <span class="st">"Tottenville"</span>, <span class="st">"Unionport/Soundview"</span>, <span class="st">"University Heights"</span>, </span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Upper East Side"</span>, <span class="st">"Upper West Side"</span>, <span class="st">"Washington Heights"</span>, </span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Williamsbridge"</span>, <span class="st">"Williamsburg/Greenpoint"</span>, <span class="st">"Woodhaven"</span>), </span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">school_district =</span> <span class="fu">c</span>(<span class="dv">30</span>, <span class="dv">2</span>, <span class="dv">20</span>, <span class="dv">26</span>, <span class="dv">10</span>, <span class="dv">16</span>, <span class="dv">21</span>, <span class="dv">20</span>, <span class="dv">23</span>, <span class="dv">32</span>, <span class="dv">18</span>, <span class="dv">5</span>, <span class="dv">2</span>, <span class="dv">9</span>, <span class="dv">21</span>, <span class="dv">17</span>, <span class="dv">17</span>, <span class="dv">18</span>, <span class="dv">4</span>, <span class="dv">19</span>, </span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>                      <span class="dv">12</span>, <span class="dv">24</span>, <span class="dv">22</span>, <span class="dv">25</span>, <span class="dv">13</span>, <span class="dv">26</span>, <span class="dv">2</span>, <span class="dv">27</span>, <span class="dv">8</span>, <span class="dv">24</span>, <span class="dv">28</span>, <span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">2</span>, <span class="dv">9</span>, <span class="dv">7</span>, <span class="dv">2</span>, <span class="dv">15</span>, <span class="dv">11</span>, <span class="dv">29</span>, </span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>                      <span class="dv">28</span>, <span class="dv">24</span>, <span class="dv">10</span>, <span class="dv">21</span>, <span class="dv">31</span>, <span class="dv">31</span>, <span class="dv">24</span>, <span class="dv">15</span>, <span class="dv">27</span>, <span class="dv">8</span>, <span class="dv">31</span>, <span class="dv">8</span>, <span class="dv">7</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">6</span>, <span class="dv">12</span>, <span class="dv">14</span>, <span class="dv">27</span>)</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>educational_attainment <span class="ot">&lt;-</span> educational_attainment <span class="sc">|&gt;</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(district_mapping, <span class="fu">join_by</span>(<span class="st">"Location"</span> <span class="sc">==</span> <span class="st">"location"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>Location <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Bronx"</span>, <span class="st">"Brooklyn"</span>, <span class="st">"Manhattan"</span>, <span class="st">"Queens"</span>, <span class="st">"Staten Island"</span>, <span class="st">"New York City"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">location =</span> Location, </span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>         <span class="at">edu_level =</span> <span class="st">`</span><span class="at">Education Level</span><span class="st">`</span>,</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>         <span class="at">year =</span> TimeFrame,</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>         <span class="at">edu_percent =</span> Data) <span class="sc">|&gt;</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">&gt;=</span> <span class="dv">2006</span> <span class="sc">&amp;</span> year <span class="sc">&lt;=</span> <span class="dv">2019</span>, DataFormat <span class="sc">==</span> <span class="st">"Percent"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(year, school_district) <span class="sc">|&gt;</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(year, school_district, location, edu_level, edu_percent)</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>emp_pop_ratio <span class="ot">&lt;-</span> emp_pop_ratio <span class="sc">|&gt;</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(district_mapping, <span class="fu">join_by</span>(<span class="st">"Location"</span> <span class="sc">==</span> <span class="st">"location"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>Location <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Bronx"</span>, <span class="st">"Brooklyn"</span>, <span class="st">"Manhattan"</span>, <span class="st">"Queens"</span>, <span class="st">"Staten Island"</span>, <span class="st">"New York City"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">location =</span> Location, </span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>         <span class="at">year =</span> TimeFrame, </span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>         <span class="at">emp_ratio =</span> Data) <span class="sc">|&gt;</span></span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">&gt;=</span> <span class="dv">2006</span> <span class="sc">&amp;</span> year <span class="sc">&lt;=</span> <span class="dv">2019</span>, DataFormat <span class="sc">==</span> <span class="st">"Percent"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(year, school_district) <span class="sc">|&gt;</span></span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(year, school_district, location, emp_ratio)</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>median_incomes <span class="ot">&lt;-</span> median_incomes <span class="sc">|&gt;</span></span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(district_mapping, <span class="fu">join_by</span>(<span class="st">"Location"</span> <span class="sc">==</span> <span class="st">"location"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>Location <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Bronx"</span>, <span class="st">"Brooklyn"</span>, <span class="st">"Manhattan"</span>, <span class="st">"Queens"</span>, <span class="st">"Staten Island"</span>, <span class="st">"New York City"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">location =</span> Location, </span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>         <span class="at">year =</span> TimeFrame, </span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>         <span class="at">median_income =</span> Data) <span class="sc">|&gt;</span></span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">&gt;=</span> <span class="dv">2006</span> <span class="sc">&amp;</span> year <span class="sc">&lt;=</span> <span class="dv">2019</span>, DataFormat <span class="sc">==</span> <span class="st">"Dollars"</span>, <span class="st">`</span><span class="at">Household Type</span><span class="st">`</span> <span class="sc">==</span> <span class="st">"Families with Children"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(year, school_district) <span class="sc">|&gt;</span></span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(year, school_district, location, median_income) <span class="sc">|&gt;</span></span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">median_income =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(median_income), <span class="dv">2</span>))</span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>median_incomes[median_incomes<span class="sc">$</span>year <span class="sc">==</span> <span class="dv">2011</span> <span class="sc">&amp;</span></span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>                         median_incomes<span class="sc">$</span>school_district <span class="sc">==</span> <span class="dv">2</span> <span class="sc">&amp;</span></span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>                         median_incomes<span class="sc">$</span>location <span class="sc">==</span> <span class="st">"Upper East Side"</span>,</span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"median_income"</span>] <span class="ot">&lt;-</span> <span class="fl">258714.87</span></span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>poverty_age <span class="ot">&lt;-</span> poverty_age <span class="sc">|&gt;</span></span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(district_mapping, <span class="fu">join_by</span>(<span class="st">"Location"</span> <span class="sc">==</span> <span class="st">"location"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>Location <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Bronx"</span>, <span class="st">"Brooklyn"</span>, <span class="st">"Manhattan"</span>, <span class="st">"Queens"</span>, <span class="st">"Staten Island"</span>, <span class="st">"New York City"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">location =</span> Location,</span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a>         <span class="at">year =</span> TimeFrame,</span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>         <span class="at">poverty_perc =</span> Data) <span class="sc">|&gt;</span></span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">&gt;=</span> <span class="dv">2006</span> <span class="sc">&amp;</span> year <span class="sc">&lt;=</span> <span class="dv">2019</span>, DataFormat <span class="sc">==</span> <span class="st">"Percent"</span>, <span class="st">`</span><span class="at">Age Group</span><span class="st">`</span> <span class="sc">==</span> <span class="st">"Children Under 18 Years"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(year, school_district) <span class="sc">|&gt;</span></span>
+<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(year, school_district, location, poverty_perc)</span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a>snap_foodstamps <span class="ot">&lt;-</span> snap_foodstamps <span class="sc">|&gt;</span></span>
+<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(district_mapping, <span class="fu">join_by</span>(<span class="st">"Location"</span> <span class="sc">==</span> <span class="st">"location"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>Location <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Bronx"</span>, <span class="st">"Brooklyn"</span>, <span class="st">"Manhattan"</span>, <span class="st">"Queens"</span>, <span class="st">"Staten Island"</span>, <span class="st">"New York City"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">location =</span> Location,</span>
+<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a>         <span class="at">year =</span> TimeFrame,</span>
+<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a>         <span class="at">snap_percent =</span> Data) <span class="sc">|&gt;</span></span>
+<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">&gt;=</span> <span class="dv">2006</span> <span class="sc">&amp;</span> year <span class="sc">&lt;=</span> <span class="dv">2019</span>, DataFormat <span class="sc">==</span> <span class="st">"Percent"</span>, Recipient <span class="sc">==</span> <span class="st">"Households"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(year, school_district) <span class="sc">|&gt;</span></span>
+<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(year, school_district, location, snap_percent)</span>
+<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a>snap_foodstamps <span class="ot">&lt;-</span> snap_foodstamps <span class="sc">|&gt;</span></span>
+<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year, school_district) <span class="sc">|&gt;</span></span>
+<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">snap_percent =</span> <span class="fu">mean</span>(snap_percent, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Click to view code: Educational Data Cleanse</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#**** State Wide Exams ****</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine ELA data, first fix the column names before combining:</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(ela_2013_19) <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"District"</span>, <span class="st">"Grade"</span>, <span class="st">"Year"</span>, <span class="st">"Demographic"</span>, <span class="st">"Number.Tested"</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Mean.Scale.Score"</span>, <span class="st">"Num.Level.1"</span>, <span class="st">"Pct.Level.1"</span>, <span class="st">"Num.Level.2"</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Pct.Level.2"</span>, <span class="st">"Num.Level.3"</span>, <span class="st">"Pct.Level.3"</span>, <span class="st">"Num.Level.4"</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Pct.Level.4"</span>, <span class="st">"Num.Level.3.and.4"</span>, <span class="st">"Pct.Level.3.and.4"</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>ela_combined <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(ela_2006_12, ela_2013_19)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine Math data, first fix the column names before combining:</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(math_2013_23) <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="st">"District"</span>, <span class="st">"Grade"</span>, <span class="st">"Year"</span>, <span class="st">"Demographic"</span>, <span class="st">"Number.Tested"</span>,</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Mean.Scale.Score"</span>, <span class="st">"Num.Level.1"</span>, <span class="st">"Pct.Level.1"</span>, <span class="st">"Num.Level.2"</span>,</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Pct.Level.2"</span>, <span class="st">"Num.Level.3"</span>, <span class="st">"Pct.Level.3"</span>, <span class="st">"Num.Level.4"</span>,</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Pct.Level.4"</span>, <span class="st">"Num.Level.3.and.4"</span>, <span class="st">"Pct.Level.3.and.4"</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>math_combined <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(math_2006_12, math_2013_23)</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>math_combined <span class="ot">&lt;-</span> math_combined <span class="sc">|&gt;</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>Year <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2022</span>, <span class="dv">2023</span>))</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="co">#***** Regents Exam Data  *****</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Clean regents data set, note that rows with "s" values will be removed since we consider</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="co"># the small number of students to be null.</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>regent_data<span class="sc">$</span>school_district <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">substr</span>(regent_data<span class="sc">$</span><span class="st">`</span><span class="at">School DBN</span><span class="st">`</span>, <span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>regent_data <span class="ot">&lt;-</span> regent_data[<span class="sc">!</span><span class="fu">apply</span>(regent_data <span class="sc">==</span> <span class="st">"s"</span>, <span class="dv">1</span>, any), ]</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>regent_data <span class="ot">&lt;-</span> regent_data <span class="sc">|&gt;</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>school_district <span class="sc">==</span> <span class="dv">84</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">Mean Score</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">as.numeric</span>(<span class="st">`</span><span class="at">Mean Score</span><span class="st">`</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Year, school_district) <span class="sc">|&gt;</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">regent_mean_score =</span> <span class="fu">mean</span>(<span class="st">`</span><span class="at">Mean Score</span><span class="st">`</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>regent_data <span class="ot">&lt;-</span> regent_data <span class="sc">|&gt;</span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">year =</span> Year)</span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a><span class="co">#*****  Graduation Rates Data  **********</span></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>grad_data <span class="ot">&lt;-</span> grad_data <span class="sc">|&gt;</span></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Cohort <span class="sc">==</span> <span class="st">"4 year June"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">grad_year =</span> (<span class="st">`</span><span class="at">Cohort Year</span><span class="st">`</span> <span class="sc">+</span> <span class="dv">4</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">district =</span> District,</span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>         <span class="at">grad_perc =</span> <span class="st">`</span><span class="at">% Grads</span><span class="st">`</span>,</span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>         <span class="at">enrolled_perc =</span> <span class="st">`</span><span class="at">% Still Enrolled</span><span class="st">`</span>,</span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>         <span class="at">dropout_perc =</span> <span class="st">`</span><span class="at">% Dropout</span><span class="st">`</span>,) <span class="sc">|&gt;</span></span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">grad_perc =</span> <span class="fu">round</span>(grad_perc, <span class="dv">2</span>),</span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">enrolled_perc =</span> <span class="fu">round</span>(enrolled_perc, <span class="dv">2</span>),</span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">dropout_perc =</span> <span class="fu">round</span>(dropout_perc, <span class="dv">2</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(district, grad_year, grad_perc, enrolled_perc, dropout_perc)</span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a>grad_data2 <span class="ot">&lt;-</span> grad_data2 <span class="sc">|&gt;</span></span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Cohort <span class="sc">==</span> <span class="st">"4 year June"</span>, <span class="st">`</span><span class="at">Cohort Year</span><span class="st">`</span> <span class="sc">&gt;=</span> <span class="dv">2002</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">grad_year =</span> (<span class="st">`</span><span class="at">Cohort Year</span><span class="st">`</span> <span class="sc">+</span> <span class="dv">4</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">district =</span> District,</span>
+<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a>         <span class="at">grad_perc =</span> <span class="st">`</span><span class="at">% Grads</span><span class="st">`</span>,</span>
+<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a>         <span class="at">enrolled_perc =</span> <span class="st">`</span><span class="at">% Still Enrolled</span><span class="st">`</span>,</span>
+<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a>         <span class="at">dropout_perc =</span> <span class="st">`</span><span class="at">% Dropout</span><span class="st">`</span>,) <span class="sc">|&gt;</span></span>
+<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a>    <span class="at">grad_perc =</span> <span class="fu">round</span>(grad_perc, <span class="dv">2</span>),</span>
+<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a>    <span class="at">enrolled_perc =</span> <span class="fu">round</span>(enrolled_perc, <span class="dv">2</span>),</span>
+<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a>    <span class="at">dropout_perc =</span> <span class="fu">round</span>(dropout_perc, <span class="dv">2</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(district, grad_year, grad_perc, enrolled_perc, dropout_perc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Click to view code: Combining All the Data For Use</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#*** Combining Independent Factors *******</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Fix educational attainment data frame to make it wider before combining:</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>educational_attainment <span class="ot">&lt;-</span> educational_attainment <span class="sc">|&gt;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span> edu_level, </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_from =</span> edu_percent, </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_prefix =</span> <span class="st">"edu_"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">less_hs =</span> <span class="st">`</span><span class="at">edu_Less than High School Degree</span><span class="st">`</span>,</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">hs =</span> <span class="st">`</span><span class="at">edu_High School Degree</span><span class="st">`</span>,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">some_college =</span> <span class="st">`</span><span class="at">edu_Some College</span><span class="st">`</span>,</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">associates =</span> <span class="st">`</span><span class="at">edu_Associate's Degree</span><span class="st">`</span>,</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">bachelors_higher =</span> <span class="st">`</span><span class="at">edu_Bachelor's Degree or Higher</span><span class="st">`</span>)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>combined_factors <span class="ot">&lt;-</span> educational_attainment <span class="sc">|&gt;</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(year, school_district, location, less_hs, hs, some_college, associates, bachelors_higher) <span class="sc">|&gt;</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(emp_pop_ratio <span class="sc">|&gt;</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>              <span class="fu">select</span>(year, school_district, location, emp_ratio), </span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>            <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"year"</span>, <span class="st">"school_district"</span>, <span class="st">"location"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(median_incomes <span class="sc">|&gt;</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>              <span class="fu">select</span>(year, school_district, location, median_income), </span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>            <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"year"</span>, <span class="st">"school_district"</span>, <span class="st">"location"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(poverty_age <span class="sc">|&gt;</span> </span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>              <span class="fu">select</span>(year, school_district, location, poverty_perc), </span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>            <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"year"</span>, <span class="st">"school_district"</span>, <span class="st">"location"</span>))</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>combined_factors <span class="ot">&lt;-</span> combined_factors <span class="sc">|&gt;</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>location) <span class="sc">|&gt;</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(school_district, year) <span class="sc">|&gt;</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span><span class="fu">mean</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>()</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>combined_factors <span class="ot">&lt;-</span> combined_factors <span class="sc">|&gt;</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(snap_foodstamps <span class="sc">|&gt;</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>              <span class="fu">select</span>(year, school_district, snap_percent),</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>            <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"year"</span>, <span class="st">"school_district"</span>))</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>combined_factors <span class="ot">&lt;-</span> combined_factors <span class="sc">|&gt;</span></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(school_district, year) <span class="sc">|&gt;</span></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span><span class="fu">mean</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>()</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a><span class="co">#***** Combining Educational Data *******</span></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>grad_rates <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(grad_data, grad_data2)</span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>grad_rates <span class="ot">&lt;-</span> grad_rates <span class="sc">|&gt;</span></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(district <span class="sc">!=</span> <span class="dv">79</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">school_district =</span> district,</span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>         <span class="at">year =</span> grad_year)</span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>ela_data <span class="ot">&lt;-</span> ela_combined <span class="sc">|&gt;</span></span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Grade <span class="sc">==</span> <span class="st">"All Grades"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(District, Year) <span class="sc">|&gt;</span></span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(District, Mean.Scale.Score, Year, Pct.Level<span class="fl">.1</span>, Pct.Level<span class="fl">.2</span>, Pct.Level<span class="fl">.3</span>, Pct.Level<span class="fl">.4</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">school_district =</span> District,</span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>         <span class="at">year =</span> Year,</span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>         <span class="at">ela_mean_scale_score =</span> Mean.Scale.Score,</span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>         <span class="at">elevel1 =</span> Pct.Level<span class="fl">.1</span>,</span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>         <span class="at">elevel2 =</span> Pct.Level<span class="fl">.2</span>, </span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a>         <span class="at">elevel3 =</span> Pct.Level<span class="fl">.3</span>,</span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>         <span class="at">elevel4 =</span> Pct.Level<span class="fl">.4</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(combined_factors, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"school_district"</span>, <span class="st">"year"</span>))</span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a>math_data <span class="ot">&lt;-</span> math_combined <span class="sc">|&gt;</span></span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Grade <span class="sc">==</span> <span class="st">"All Grades"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(District, Year) <span class="sc">|&gt;</span></span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(District, Year, Mean.Scale.Score, Pct.Level<span class="fl">.1</span>, Pct.Level<span class="fl">.2</span>, Pct.Level<span class="fl">.3</span>, Pct.Level<span class="fl">.4</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">school_district =</span> District,</span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a>         <span class="at">year =</span> Year,</span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a>         <span class="at">math_mean_scale_score =</span> Mean.Scale.Score,</span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>         <span class="at">mlevel1 =</span> Pct.Level<span class="fl">.1</span>,</span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a>         <span class="at">mlevel2 =</span> Pct.Level<span class="fl">.2</span>, </span>
+<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a>         <span class="at">mlevel3 =</span> Pct.Level<span class="fl">.3</span>,</span>
+<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a>         <span class="at">mlevel4 =</span> Pct.Level<span class="fl">.4</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(combined_factors, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"school_district"</span>, <span class="st">"year"</span>))</span>
+<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a><span class="co"># Reordering some of our variables:</span></span>
+<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a>ela_data <span class="ot">&lt;-</span> ela_data[, <span class="fu">c</span>(<span class="st">"year"</span>, <span class="st">"school_district"</span>, <span class="st">"ela_mean_scale_score"</span>, <span class="st">"elevel1"</span>, <span class="st">"elevel2"</span>, <span class="st">"elevel3"</span>, <span class="st">"elevel4"</span>,</span>
+<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a>                         <span class="st">"less_hs"</span>, <span class="st">"hs"</span>, <span class="st">"some_college"</span>, <span class="st">"associates"</span>, <span class="st">"bachelors_higher"</span>,</span>
+<span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a>                         <span class="st">"emp_ratio"</span>, <span class="st">"median_income"</span>, <span class="st">"poverty_perc"</span>, <span class="st">"snap_percent"</span>)]</span>
+<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a>math_data <span class="ot">&lt;-</span> math_data[, <span class="fu">c</span>(<span class="st">"year"</span>, <span class="st">"school_district"</span>, <span class="st">"math_mean_scale_score"</span>, <span class="st">"mlevel1"</span>, <span class="st">"mlevel2"</span>, <span class="st">"mlevel3"</span>, <span class="st">"mlevel4"</span>,</span>
+<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a>                         <span class="st">"less_hs"</span>, <span class="st">"hs"</span>, <span class="st">"some_college"</span>, <span class="st">"associates"</span>, <span class="st">"bachelors_higher"</span>,</span>
+<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a>                         <span class="st">"emp_ratio"</span>, <span class="st">"median_income"</span>, <span class="st">"poverty_perc"</span>, <span class="st">"snap_percent"</span>)]</span>
+<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a>regent_data <span class="ot">&lt;-</span> regent_data <span class="sc">|&gt;</span></span>
+<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(grad_rates, <span class="fu">join_by</span>(school_district, year)) <span class="sc">|&gt;</span></span>
+<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(combined_factors, <span class="fu">join_by</span>(school_district, year))</span>
+<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a>regent_data <span class="ot">&lt;-</span> regent_data <span class="sc">|&gt;</span></span>
+<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">&lt;=</span> <span class="dv">2019</span>)</span>
+<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove what we don't need anymore:</span></span>
+<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(district_mapping, educational_attainment, ela_2006_12, ela_2013_19, ela_combined, emp_pop_ratio, grad_data, grad_data2, math_2006_12, math_2013_23, math_combined, median_incomes, poverty_age, snap_foodstamps)</span>
+<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(dest_file, ELA_2006, ELA_2013_19, ELA_URL_2006, ELA_URL_2013_19, file_path, grad_file, grad_file2,</span>
+<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a>   grad_url, grad_url2, regent_url, temp, temp_dir, zip_contents, zip_file, fname_shp, td)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>One very important thing to note is the difference between school districts and community districts. You may have noticed that all of our socioeconomic data is provided at the community district level; there are currently <a href="https://communityprofiles.planning.nyc.gov/">59 community districts</a>. But as we’ve mentioned earlier, our focus is on school districts (32 in total). This means that there are multiple community districts within each school district. Trying to figure out how we can assign the school districts given the community district names/codes was one of the main issues at hand. Unfortunately, there aren’t any online databases that provide school districts with community names. To solve this issue, we created a dataframe that maps community district names with school district codes, which we then join with our socioeconomic data to assign the school district codes appropriately. While this may have seemed like a time-consuming process, we felt like we were spinning our wheels trying to scrape the web for this info. At that point, manually creating this dataframe had taken us less time than scraping the web, and overall it was sufficient in organizing our data. Once we ensured the structure of our datasets and merged them accordingly, we also made sure to include only districts (i.e.&nbsp;rows of data regarding boroughs as a whole were removed) and updated the data to include the mean of our socioeconomic values grouped by school district and year. Now it may seem a bit confusing at this point in trying to keep track of all our datasets, so below is a summary of our cleaned data:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 31%">
+<col style="width: 68%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Dataframe Name</th>
+<th style="text-align: left;">Variables</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">combined_factors</td>
+<td style="text-align: left;">year, school_district, less_hs, hs, some_college, associates, bachelors_higher, emp_ratio, median_income, poverty_perc, snap_percent</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ela_data</td>
+<td style="text-align: left;">year, school_district, ela_mean_scale_score, elevel1, elevel2, elevel3, elevel4, less_hs, hs, some_college, associates, bachelors_higher, emp_ratio, median_income, poverty_perc, snap_percent</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">math_data</td>
+<td style="text-align: left;">year, school_district, math_mean_scale_score, mlevel1, mlevel2, mlevel3, mlevel4, less_hs, hs, some_college, associates, bachelors_higher, emp_ratio, median_income, poverty_perc, snap_percent</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">grad_rates</td>
+<td style="text-align: left;">school_district, year, grad_perc, enrolled_perc, dropout_perc</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">regent_data</td>
+<td style="text-align: left;">year, school_district, regent_mean_score, grad_perc, enrolled_perc, dropout_perc, less_hs, hs, some_college, associates, bachelors_higher, emp_ratio, median_income, poverty_perc, snap_percent</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">highschool_postcovid</td>
+<td style="text-align: left;">year, school_district, regent_mean_score, grad_perc, enrolled_perc, dropout_perc</td>
+</tr>
+</tbody>
+</table>
+<p>We’re now ready to begin our analysis.</p>
+</section>
+<section id="exploring-the-data-how-might-these-socioeconomic-factors-impact-students-academic-achievements" class="level1">
+<h1>Exploring the Data: How might these socioeconomic factors impact students’ academic achievements?</h1>
+<section id="state-wide-exams-ela-math" class="level2">
+<h2 class="anchored" data-anchor-id="state-wide-exams-ela-math">State Wide Exams: ELA &amp; Math</h2>
+<p>We’ll first take a look at the ELA and Math State Wide Exam scores. To clarify, there are two ways we can look at the distribution of these scores: mean scale score or the breakdown percentage of students receiving a level of 1 through 4. The mean scale score is an average of all students tested, which according to the <a href="https://www.nysed.gov/state-assessment/how-are-regents-examinations-scored">New York State Education Department</a>, is calculated using a complex process of several factors. Because we mainly care about how well students are performing, we’ll take a look at students who are meeting learning standards with or without distinction (in other words, students scoring 3 or higher).</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Click to view code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># First we'll calculate the combined percentage of Level 3 and Level 4 for each district and year for ELA</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>ela_studentspassing <span class="ot">&lt;-</span> ela_data <span class="sc">|&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year, school_district) <span class="sc">|&gt;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">passing =</span> <span class="fu">sum</span>(elevel3 <span class="sc">+</span> elevel4, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>ela_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(ela_studentspassing, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(school_district), <span class="at">y =</span> passing)) <span class="sc">+</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">fill =</span> <span class="st">"steelblue3"</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> year, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">breaks =</span> <span class="cf">function</span>(x) x[<span class="fu">seq</span>(<span class="dv">1</span>, <span class="fu">length</span>(x), <span class="at">by =</span> <span class="dv">4</span>)]) <span class="sc">+</span> </span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Percentage of Students Meeting NYC ELA Learning Standards, 2006 - 2019"</span>,</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"School District"</span>,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"% of Students Meeting Learning Standards or Higher (Score of 3 or 4)"</span>,</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Data source: New York City Department of Education Infohub"</span>) <span class="sc">+</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>)); ela_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Socioeconomic_Factors_NYC_Schools_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Click to view code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Repeat for Math</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>math_studentspassing <span class="ot">&lt;-</span> math_data <span class="sc">|&gt;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year, school_district) <span class="sc">|&gt;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">passing =</span> <span class="fu">sum</span>(mlevel3 <span class="sc">+</span> mlevel4, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>math_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(math_studentspassing, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(school_district), <span class="at">y =</span> passing)) <span class="sc">+</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">fill =</span> <span class="st">"tomato3"</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> year, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">breaks =</span> <span class="cf">function</span>(x) x[<span class="fu">seq</span>(<span class="dv">1</span>, <span class="fu">length</span>(x), <span class="at">by =</span> <span class="dv">4</span>)]) <span class="sc">+</span> </span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Percentage of Students Meeting NYC Math Learning Standards, 2006 - 2019"</span>,</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"School District"</span>,</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"% of Students Meeting Learning Standards or Higher (Score of 3 or 4)"</span>,</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Data source: New York City Department of Education Infohub"</span>) <span class="sc">+</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>)); math_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Socioeconomic_Factors_NYC_Schools_files/figure-html/unnamed-chunk-7-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We can see above the distribution of both ELA and Math scores across school districts through the years of 2006 to 2019. We can see percentages dip for roughly districts 4 through 13 in both ELA and Math from 2013 to 2017, and we can see schools in these districts slightly improve, but nonetheless, the percentage of students meeting the learning standards and beyond has since decreased from years in the late 2000s. It should also be a reminder that these percentages are based on all students in each school district, meaning it’s a accumulation of students across all grades and all public schools. As someone who has attended a NYC public school during these years, I recall teachers mentioning there were new learning standards set by New York State. As it turns out, there were changes made; according to the New York State Education Department, proficiency was based on the <a href="https://www.p12.nysed.gov/irs/ela-math/2013/2013-08-06FINALELAandMathPRESENTATIONDECK_v2.pdf">Common Core</a>, which they defined as a more “demanding set of knowledge and skills necessary for 21st century college and careers.” On a personal level, I do remember the curriculum in these subjects becoming increasingly difficult as I went through elementary and middle school. Though it is not certain, it is possible that the change in learning standards may have impacted the performance of students that took the State Wide Exams.</p>
+</section>
+<section id="regents-exams" class="level2">
+<h2 class="anchored" data-anchor-id="regents-exams">Regents Exams</h2>
+<p>We can also take a look at the mean Regents scores for the years 2015 to 2019 below. Students are required to pass five Regents exams with a score of at least 65 out of 100 (which is the lowest passing grade) in order to graduate high school, but it can’t be just any exam. Of these five exams, it must include:</p>
+<blockquote class="blockquote">
+<p>English Language Arts (ELA)</p>
+<p>One math Regents exam (Algebra I, Geometry, or Algebra II/Trigonometry)</p>
+<p>One social studies Regents exam (Global or U.S. History)</p>
+<p>One science Regents exam (Earth Science, Living Environment/Biology, Chemistry, or Physics)</p>
+<p>One additional Regents exam or other assessment</p>
+</blockquote>
+<p>The mean Regent scoring we’ve used to create the above visualization is actually an average of all Regents examinations administered across each district, regardless of the test subject or grade. We can see that in 2016, nearly half the school districts had mean Regents scores that were not passing, which may make us wonder about the possibility of Regents examinations being more difficult during this year compared to other years. This may be unlikely however, considering that Regents have been administered since 1865 and while there have been changes since that time, there hasn’t been many policy changes to these exams in the periods we’re analyzing. Because Regents examinations are required for students to take in order to graduate, it’s concerning when students in these school districts aren’t passing. In fact, <a href="https://www.nysed.gov/sites/default/files/programs/grad-measures/graduation-requirements-and-measures-review.pdf">research</a> has shown that these exit exams may contribute to the increase in high school dropout rates, and that these exams aren’t necessarily better in preparing students for life after high school. We may view which school districts below have failed the Regents exams by each year below, and we can actually see how each district’s graduation rates have changed over time.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Click to view code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># First we'll assign each district in each year a level of passing or failing, then summarize</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>regent_summary <span class="ot">&lt;-</span> regent_data <span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Result =</span> <span class="fu">ifelse</span>(regent_mean_score <span class="sc">&gt;=</span> <span class="dv">65</span>, <span class="st">"Passing"</span>, <span class="st">"Failing"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year, Result) <span class="sc">|&gt;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">count =</span> <span class="fu">n</span>(), <span class="at">.groups =</span> <span class="st">'drop'</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>regent_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(regent_summary, <span class="fu">aes</span>(<span class="at">x =</span> Result, <span class="at">y =</span> count, <span class="at">fill =</span> Result)) <span class="sc">+</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> year, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span> </span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Passing"</span> <span class="ot">=</span> <span class="st">"darkseagreen4"</span>, <span class="st">"Failing"</span> <span class="ot">=</span> <span class="st">"tomato"</span>)) <span class="sc">+</span> </span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Number of School Districts Passing and Failing the Regents, 2015 - 2019"</span>,</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Regent Result"</span>,</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Number of Districts"</span>,</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Data source: New York City Department of Education Infohub"</span>) <span class="sc">+</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>), </span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"none"</span>); regent_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Socioeconomic_Factors_NYC_Schools_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Click to view code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>regent_summary_fail <span class="ot">&lt;-</span> regent_data <span class="sc">|&gt;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Result =</span> <span class="fu">ifelse</span>(regent_mean_score <span class="sc">&gt;=</span> <span class="dv">65</span>, <span class="st">"Passing"</span>, <span class="st">"Failing"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year, Result) <span class="sc">|&gt;</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Result <span class="sc">==</span> <span class="st">"Failing"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(year, school_district, Result) <span class="co"># Select relevant columns for the table</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>fail_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">year =</span> <span class="fu">c</span>(<span class="dv">2015</span>, <span class="dv">2016</span>, <span class="dv">2017</span>, <span class="dv">2018</span>, <span class="dv">2019</span>),</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">school_district =</span> <span class="fu">c</span>(<span class="st">"7, 8, 9, 12, 14, 15, 16, 17, 18, 19, 23, 29"</span>, <span class="st">"5, 6, 7, 8, 9, 11, 12, 14, 15, 16, 17, 18, 19, 23, 29, 31"</span>, </span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>                      <span class="st">"6, 7, 8, 9, 12, 14, 16, 17, 18, 19, 23, 29, 32"</span>, <span class="st">"7, 8, 12, 16, 18, 19, 23, 29, 32"</span>, </span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>                      <span class="st">"7, 8, 12, 16, 18, 19, 23, 29, 32"</span>))</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>regent_fail_table <span class="ot">&lt;-</span> fail_data <span class="sc">|&gt;</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="fu">md</span>(<span class="st">"**School Districts Not Passing, 2015 - 2019**"</span>),</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="fu">md</span>(<span class="st">"**Determined by Regents Score &lt; 65**"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(<span class="at">school_district =</span> <span class="fu">md</span>(<span class="st">"**School District**"</span>),</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">year =</span> <span class="fu">md</span>(<span class="st">"**Year**"</span>)); regent_fail_table </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="gjsynizlwu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#gjsynizlwu table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#gjsynizlwu thead, #gjsynizlwu tbody, #gjsynizlwu tfoot, #gjsynizlwu tr, #gjsynizlwu td, #gjsynizlwu th {
+  border-style: none;
+}
+
+#gjsynizlwu p {
+  margin: 0;
+  padding: 0;
+}
+
+#gjsynizlwu .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#gjsynizlwu .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#gjsynizlwu .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#gjsynizlwu .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#gjsynizlwu .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#gjsynizlwu .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gjsynizlwu .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#gjsynizlwu .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#gjsynizlwu .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#gjsynizlwu .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#gjsynizlwu .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#gjsynizlwu .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#gjsynizlwu .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#gjsynizlwu .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#gjsynizlwu .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#gjsynizlwu .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#gjsynizlwu .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#gjsynizlwu .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#gjsynizlwu .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gjsynizlwu .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#gjsynizlwu .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#gjsynizlwu .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#gjsynizlwu .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gjsynizlwu .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#gjsynizlwu .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#gjsynizlwu .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gjsynizlwu .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gjsynizlwu .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#gjsynizlwu .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gjsynizlwu .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#gjsynizlwu .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gjsynizlwu .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#gjsynizlwu .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gjsynizlwu .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#gjsynizlwu .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gjsynizlwu .gt_left {
+  text-align: left;
+}
+
+#gjsynizlwu .gt_center {
+  text-align: center;
+}
+
+#gjsynizlwu .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#gjsynizlwu .gt_font_normal {
+  font-weight: normal;
+}
+
+#gjsynizlwu .gt_font_bold {
+  font-weight: bold;
+}
+
+#gjsynizlwu .gt_font_italic {
+  font-style: italic;
+}
+
+#gjsynizlwu .gt_super {
+  font-size: 65%;
+}
+
+#gjsynizlwu .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#gjsynizlwu .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#gjsynizlwu .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#gjsynizlwu .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#gjsynizlwu .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#gjsynizlwu .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#gjsynizlwu .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#gjsynizlwu .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#gjsynizlwu div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_heading">
+<th colspan="2" class="gt_heading gt_title gt_font_normal"><strong>School Districts Not Passing, 2015 - 2019</strong></th>
+</tr>
+<tr class="odd gt_heading">
+<th colspan="2" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border"><strong>Determined by Regents Score &lt; 65</strong></th>
+</tr>
+<tr class="header gt_col_headings">
+<th id="year" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col"><strong>Year</strong></th>
+<th id="school_district" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col"><strong>School District</strong></th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_right" headers="year">2015</td>
+<td class="gt_row gt_right" headers="school_district">7, 8, 9, 12, 14, 15, 16, 17, 18, 19, 23, 29</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="year">2016</td>
+<td class="gt_row gt_right" headers="school_district">5, 6, 7, 8, 9, 11, 12, 14, 15, 16, 17, 18, 19, 23, 29, 31</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="year">2017</td>
+<td class="gt_row gt_right" headers="school_district">6, 7, 8, 9, 12, 14, 16, 17, 18, 19, 23, 29, 32</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="year">2018</td>
+<td class="gt_row gt_right" headers="school_district">7, 8, 12, 16, 18, 19, 23, 29, 32</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="year">2019</td>
+<td class="gt_row gt_right" headers="school_district">7, 8, 12, 16, 18, 19, 23, 29, 32</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<details class="code-fold">
+<summary>Click to view code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Now we take a look at graduation rates using shape files. </span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge the shapefile data with graduation rates</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>nyc_grad_map <span class="ot">&lt;-</span> nyc_sf <span class="sc">|&gt;</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(grad_rates, <span class="at">by =</span> <span class="st">"school_district"</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the animated plot</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>grad_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(nyc_grad_map) <span class="sc">+</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> grad_perc, <span class="at">geometry =</span> geometry), <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf_text</span>(<span class="at">data =</span> nyc_sf, <span class="fu">aes</span>(<span class="at">geometry =</span> geometry, <span class="at">label =</span> school_district), <span class="at">size =</span> <span class="dv">3</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">name =</span> <span class="st">"Graduation Rate (%)"</span>,<span class="at">low =</span> <span class="st">"red2"</span>, <span class="at">high =</span> <span class="st">"palegreen3"</span>, <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">100</span>), ) <span class="sc">+</span> </span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"NYC School District Graduation Rates Over Time"</span>,</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Year: {closest_state}"</span>,</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Source: New York City Department of Education Infohub"</span>) <span class="sc">+</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">16</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>),</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"right"</span>) <span class="sc">+</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transition_states</span>(year, <span class="at">transition_length =</span> <span class="dv">1</span>, <span class="at">state_length =</span> <span class="fl">0.5</span>) <span class="sc">+</span> </span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ease_aes</span>(<span class="st">'linear'</span>)</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Render the animation by saving it as a gif</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a><span class="co"># animate(grad_plot, fps = 10, width = 800, height = 600, renderer = gifski_renderer("nyc_grad_rates.gif"))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><img src="nyc_grad_rates.gif" class="img-fluid"></p>
+<p>We can see that many of these districts have started out with low graduation rates (red shade) at the beginning of our time frame, that is, 2006. However as time progresses, we may also point out that a few of these districts are slower in improving their graduation rates relative to other school districts. For example, take a look at the shades of school districts 8, 12, 16, and 23, just to name a few.</p>
+</section>
+</section>
+<section id="how-do-our-socioeconomic-variables-correlate-to-each-student-academic-metric" class="level1">
+<h1>How do our socioeconomic variables correlate to each student academic metric?</h1>
+<p>Next we’ll take a look at how factors like median income, educational attainment, poverty rates, SNAP rates, and employment rates correlate to ELA and Math State Wide Exams. You’ll notice there are certain variables such as MSS, which is an abbreviation of Mean Scale Score, and L1 through L4, which are the score breakdowns of the subject. Stronger shades of green indicate stronger positive correlations, whereas stronger shades of red indicate stronger negative correlations. There isn’t too great of a difference in correlation coefficients when comparing the results of ELA versus Math scores. We may point out, however, that students scoring a level 1 or 2 tend to correlate with districts with increased SNAP rates and decreased employment rates and Bachelor’s or higher rates. Similarly, students who scored a level 4 tend to correlate with districts where there are higher median incomes per household, higher rates of employment, and lower rates of poverty and SNAP rates.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Click to view code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>ela_cor <span class="ot">&lt;-</span> ela_data[, <span class="sc">!</span>(<span class="fu">names</span>(ela_data) <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"year"</span>, <span class="st">"school_district"</span>))]</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>cor_matrix <span class="ot">&lt;-</span> <span class="fu">cor</span>(ela_cor, <span class="at">use =</span> <span class="st">"pairwise.complete.obs"</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Fix the variable names in the plot</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(cor_matrix) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"MSS"</span>, <span class="st">"L1"</span>, <span class="st">"L2"</span>, </span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>                          <span class="st">"L3"</span>, <span class="st">"L4"</span>, <span class="st">"&lt; HS"</span>, <span class="st">"HS"</span>, <span class="st">"Some College"</span>, </span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>                          <span class="st">"Associates"</span>, <span class="st">"Bachelor+"</span>, <span class="st">"Employment Ratio"</span>, </span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>                          <span class="st">"Median Income"</span>, <span class="st">"Poverty"</span>, <span class="st">"SNAP"</span>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(cor_matrix) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(cor_matrix)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  cor_matrix, </span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"circle"</span>,</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"full"</span>,</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">tl.cex =</span> <span class="fl">0.8</span>,</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">tl.col =</span> <span class="st">"black"</span>,</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">addCoef.col =</span> <span class="st">"black"</span>,</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">number.cex =</span> <span class="fl">0.5</span>,</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="fu">colorRampPalette</span>(<span class="fu">c</span>(<span class="st">"tomato3"</span>, <span class="st">"white"</span>, <span class="st">"darkseagreen4"</span>))(<span class="dv">200</span>),</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">cl.pos =</span> <span class="st">"r"</span>,</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">cl.cex =</span> <span class="fl">0.8</span>,</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">diag =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Correlation of ELA Scores &amp; Socioeconomic Factors"</span>,</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Socioeconomic_Factors_NYC_Schools_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Click to view code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>math_cor <span class="ot">&lt;-</span> math_data[, <span class="sc">!</span>(<span class="fu">names</span>(math_data) <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"year"</span>, <span class="st">"school_district"</span>))]</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>cor_matrix <span class="ot">&lt;-</span> <span class="fu">cor</span>(math_cor, <span class="at">use =</span> <span class="st">"pairwise.complete.obs"</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(cor_matrix) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"MSS"</span>, <span class="st">"L1"</span>, <span class="st">"L2"</span>, </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>                          <span class="st">"L3"</span>, <span class="st">"L4"</span>, <span class="st">"&lt; HS"</span>, <span class="st">"HS"</span>, <span class="st">"Some College"</span>, </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>                          <span class="st">"Associates"</span>, <span class="st">"Bachelor+"</span>, <span class="st">"Employment Ratio"</span>, </span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>                          <span class="st">"Median Income"</span>, <span class="st">"Poverty"</span>, <span class="st">"SNAP"</span>)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(cor_matrix) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(cor_matrix)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  cor_matrix, </span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"circle"</span>,</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"full"</span>,</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">tl.cex =</span> <span class="fl">0.8</span>,</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">tl.col =</span> <span class="st">"black"</span>,</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">addCoef.col =</span> <span class="st">"black"</span>,</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">number.cex =</span> <span class="fl">0.5</span>,</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="fu">colorRampPalette</span>(<span class="fu">c</span>(<span class="st">"tomato3"</span>, <span class="st">"white"</span>, <span class="st">"darkseagreen4"</span>))(<span class="dv">200</span>),</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">cl.pos =</span> <span class="st">"r"</span>,</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">cl.cex =</span> <span class="fl">0.8</span>,</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">diag =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Correlation of Math Scores &amp; Socioeconomic Factors"</span>,</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Socioeconomic_Factors_NYC_Schools_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>If we take a look at how these same factors correlate with high school students’ graduation rates and Regents scoring, we notice that it’s not unsimilar. In fact, the correlations are slightly higher for high schoolers when looking at how graduation rates correlate to employment rates, median income, and educational attainment. This may suggest that these factors may have a larger impact on students’ education as they grow older, as opposed to grades earned in earlier years of schooling. This reasoning may make sense as responsibilities (i.e.&nbsp;financial) increase as students grow older.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Click to view code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>regent_cor <span class="ot">&lt;-</span> regent_data <span class="sc">|&gt;</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>year, <span class="sc">-</span>school_district)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>regent_matrix <span class="ot">&lt;-</span> <span class="fu">cor</span>(regent_cor, <span class="at">use =</span> <span class="st">"pairwise.complete.obs"</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># fix the labels in the plot</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>custom_labels <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Regent Mean"</span>, <span class="st">"Grad %"</span>, <span class="st">"Enroll %"</span>, <span class="st">"Dropout %"</span>, </span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"&lt; HS %"</span>, <span class="st">"HS %"</span>, <span class="st">"Some College %"</span>, <span class="st">"Assoc Deg %"</span>, </span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Bachelors+ %"</span>, <span class="st">"Employment Ratio"</span>, <span class="st">"Median Income"</span>, </span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Poverty %"</span>, <span class="st">"SNAP %"</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(regent_matrix) <span class="ot">&lt;-</span> custom_labels</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(regent_matrix) <span class="ot">&lt;-</span> custom_labels</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  regent_matrix,</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"circle"</span>,</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"full"</span>,</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="fu">colorRampPalette</span>(<span class="fu">c</span>(<span class="st">"tomato3"</span>, <span class="st">"white"</span>, <span class="st">"darkseagreen4"</span>))(<span class="dv">200</span>),</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Correlation of Regents, Graduation Rates, &amp; Socioeconomic Factors"</span>,</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">tl.col =</span> <span class="st">"black"</span>,</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">tl.srt =</span> <span class="dv">45</span>,</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">addCoef.col =</span> <span class="st">"black"</span>,</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">number.cex =</span> <span class="fl">0.5</span>,</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">cl.cex =</span> <span class="fl">0.8</span>,</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">cl.pos =</span> <span class="st">"r"</span>,</span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Socioeconomic_Factors_NYC_Schools_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="what-patterns-appear-when-comparing-academic-performance-across-schools-in-wealthier-and-lower-income-neighborhoods" class="level1">
+<h1>What patterns appear when comparing academic performance across schools in wealthier and lower-income neighborhoods?</h1>
+<p>We want to take a closer look at high school students in determining how performance may differ across wealthy and lower income school districts given our correlation visualization. We also feel that their performance during this period is more significant because most students are working towards higher education after high school, such as an associates or bachelor’s degree. Using median income, we’ll categorize each school district as low, middle, or high income groups and see what trends appear.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Click to view code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Given our median income data, we'll categorize neighborhoods into different income classes</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Low-income earners will be below the 25th percentile, Middle-income earners will be between </span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 25th and 75th percentiles, and High-income earners will be above the 75th percentile.</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Regents</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>regent_income <span class="ot">&lt;-</span> regent_data <span class="sc">|&gt;</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">income_group =</span> <span class="fu">case_when</span>(</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    median_income <span class="sc">&lt;</span> <span class="fu">quantile</span>(median_income, <span class="fl">0.25</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">~</span> <span class="st">"Low"</span>,</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    median_income <span class="sc">&gt;=</span> <span class="fu">quantile</span>(median_income, <span class="fl">0.25</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">&amp;</span> median_income <span class="sc">&lt;=</span> <span class="fu">quantile</span>(median_income, <span class="fl">0.75</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">~</span> <span class="st">"Middle"</span>,</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    median_income <span class="sc">&gt;</span> <span class="fu">quantile</span>(median_income, <span class="fl">0.75</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">~</span> <span class="st">"High"</span>))</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>regent_aggregated <span class="ot">&lt;-</span> regent_income <span class="sc">|&gt;</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year, income_group) <span class="sc">|&gt;</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">avg_grad_rate =</span> <span class="fu">mean</span>(grad_perc, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),<span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>regent_summary <span class="ot">&lt;-</span> regent_income <span class="sc">|&gt;</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(income_group) <span class="sc">|&gt;</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean_regent_score =</span> <span class="fu">mean</span>(regent_mean_score, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), </span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>            <span class="at">grad_rate =</span> <span class="fu">mean</span>(grad_perc, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>regent_summary <span class="ot">&lt;-</span> regent_summary <span class="sc">|&gt;</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>(income_group)</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>regent_income <span class="ot">&lt;-</span> regent_income <span class="sc">|&gt;</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>(income_group)</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>regent_incomeplot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(regent_income, <span class="fu">aes</span>(<span class="at">x =</span> income_group, <span class="at">y =</span> regent_mean_score, <span class="at">fill =</span> income_group)) <span class="sc">+</span></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Mean Regents Score by Income Group Across NYC School Districts"</span>,</span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Income Group"</span>, <span class="at">y =</span> <span class="st">"Mean Regent Score"</span>,</span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">"Data sourced from New York City Department of Education Infohub: Regent Exams Results"</span>) <span class="sc">+</span></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Low"</span> <span class="ot">=</span> <span class="st">"sienna3"</span>, <span class="st">"Middle"</span> <span class="ot">=</span> <span class="st">"skyblue3"</span>, <span class="st">"High"</span> <span class="ot">=</span> <span class="st">"darkseagreen3"</span>)) <span class="sc">+</span> </span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>,</span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">14</span>)); regent_incomeplot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Socioeconomic_Factors_NYC_Schools_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Click to view code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>regent_income_grad <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(regent_aggregated, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> avg_grad_rate, <span class="at">color =</span> income_group, <span class="at">group =</span> income_group)) <span class="sc">+</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Low"</span> <span class="ot">=</span> <span class="st">"sienna3"</span>, <span class="st">"Middle"</span> <span class="ot">=</span> <span class="st">"skyblue3"</span>, <span class="st">"High"</span> <span class="ot">=</span> <span class="st">"mediumseagreen"</span>),</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">name =</span> <span class="st">"Income Group"</span>) <span class="sc">+</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"High School Graduation Rates by Income Group Across NYC School Districts"</span>,</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Year"</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Average Graduation Rate (%)"</span>,</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Data sourced from NYC Public Schools InfoHub: Graduation results for Classes of 2015 to 2019"</span>) <span class="sc">+</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">face =</span> <span class="st">"bold"</span>)); regent_income_grad</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Socioeconomic_Factors_NYC_Schools_files/figure-html/unnamed-chunk-12-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We can see on average, school districts with lower income have performed poorly on Regents Exams on average relative to higher income districts. Not only this, but lower income districts also had the lowest graduation rates during these years compared to middle and higher income districts. This finding was expected as we’ve mentioned earlier that passing Regents examinations are required to graduate. Although it appears that graduation rates on average have been slowly increasing over this time period, any board of education (and the general public) would want to see more ideal rates. To give further perspective of how median incomes and poverty rates have changed over time, we’ve animated the below plots.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Click to view code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>animation_data <span class="ot">&lt;-</span> nyc_sf <span class="sc">|&gt;</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(combined_factors, <span class="at">by =</span> <span class="st">"school_district"</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>poverty_map <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(animation_data) <span class="sc">+</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">geometry =</span> geometry, <span class="at">fill =</span> poverty_perc), <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf_text</span>(<span class="at">data =</span> nyc_sf, <span class="fu">aes</span>(<span class="at">geometry =</span> geometry, <span class="at">label =</span> school_district), <span class="at">size =</span> <span class="dv">3</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">name =</span> <span class="st">"Poverty Rate (%)"</span>, <span class="at">low =</span> <span class="st">"pink"</span>, <span class="at">high =</span> <span class="st">"red"</span>,</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">percent_format</span>(<span class="at">accuracy =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Poverty Rates Across NYC School Districts ({frame_time})"</span>,</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Year: {frame_time}"</span>,</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Data Source: U.S. Census Bureau, American Community Survey 1-Year Estimates"</span>) <span class="sc">+</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>),</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>),</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.key.width =</span> <span class="fu">unit</span>(<span class="dv">4</span>, <span class="st">"lines"</span>),</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.margin =</span> <span class="fu">margin</span>(<span class="dv">10</span>, <span class="dv">10</span>, <span class="dv">10</span>, <span class="dv">10</span>)) <span class="sc">+</span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transition_time</span>(<span class="fu">as.integer</span>(year)) <span class="sc">+</span>  </span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ease_aes</span>(<span class="st">'linear'</span>)</span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a><span class="co"># animate(poverty_map, width = 800, height = 600, fps = 10, duration = 10)</span></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a><span class="do">#### Median income</span></span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>median_income_map <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(animation_data) <span class="sc">+</span></span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">geometry =</span> geometry, <span class="at">fill =</span> median_income), <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf_text</span>(<span class="at">data =</span> nyc_sf, <span class="fu">aes</span>(<span class="at">geometry =</span> geometry, <span class="at">label =</span> school_district), <span class="at">size =</span> <span class="dv">3</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">name =</span> <span class="st">"Median Income ($)"</span>, <span class="at">low =</span> <span class="st">"lightyellow"</span>, <span class="at">high =</span> <span class="st">"darkgreen"</span>,</span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">limits =</span> <span class="fu">range</span>(animation_data<span class="sc">$</span>median_income, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">comma_format</span>(<span class="at">accuracy =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Median Income Across NYC School Districts ({frame_time})"</span>,</span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Year: {frame_time}"</span>,</span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Data Source: U.S. Census Bureau, American Community Survey 1-Year Estimates"</span>) <span class="sc">+</span></span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
+<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>),</span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>),</span>
+<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.margin =</span> <span class="fu">margin</span>(<span class="dv">10</span>, <span class="dv">10</span>, <span class="dv">10</span>, <span class="dv">10</span>),</span>
+<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.key.width =</span> <span class="fu">unit</span>(<span class="dv">4</span>, <span class="st">"lines"</span>)) <span class="sc">+</span></span>
+<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transition_time</span>(<span class="fu">as.integer</span>(year)) <span class="sc">+</span> </span>
+<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ease_aes</span>(<span class="st">'linear'</span>)</span>
+<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a><span class="co"># animate(median_income_map, width = 800, height = 600, fps = 10, duration = 10)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><img src="poverty_animation.gif" class="img-fluid"> <img src="income_animation.gif" class="img-fluid"></p>
+<p>We can see poverty rates and median income has changed slightly over time, where in some districts, poverty has gone up, whereas in others, median income has increased.</p>
+</section>
+<section id="linear-regression-t-test-creating-a-predictor-model" class="level1">
+<h1>Linear Regression t-Test &amp; Creating a Predictor Model</h1>
+<p>At this point in our analysis, we want to see exactly which factors are statistically significant in determining graduation rates of school districts. We’ll perform a simple t-test to test our null hypothesis, that is, none of these predictor variables are significantly associated with graduation rates. Our alternative hypothesis will be the opposite, that those lower than our p-value threshold are significantly associated with graduation rates. Since many of our predictor variables have moderate to strong correlations with each other, for example, SNAP rates and poverty rates, we will test for multicollinearity by finding the VIF values (variance inflation factors) of our variables.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Click to view code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the data we'll use to create our models</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>model_data <span class="ot">&lt;-</span> combined_factors <span class="sc">|&gt;</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(grad_rates, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"school_district"</span>, <span class="st">"year"</span>))</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1989</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a training and testing data sets. We'll use 80% of our data for training, and the remaining 20% for testing:</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>train_division <span class="ot">&lt;-</span> <span class="fu">createDataPartition</span>(model_data<span class="sc">$</span>grad_perc, <span class="at">p =</span> <span class="fl">0.8</span>, <span class="at">list =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>train_data <span class="ot">&lt;-</span> model_data[train_division, ]</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>test_data <span class="ot">&lt;-</span> model_data[<span class="sc">-</span>train_division, ]</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="co"># We'll first create a linear regression model with all our predictor variables, then check VIF values and remove those greater than 6</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>model1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(grad_perc <span class="sc">~</span> less_hs <span class="sc">+</span> hs <span class="sc">+</span> some_college <span class="sc">+</span> associates <span class="sc">+</span> </span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>              bachelors_higher <span class="sc">+</span> emp_ratio <span class="sc">+</span> median_income <span class="sc">+</span> </span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>                poverty_perc, <span class="at">data =</span> train_data)</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(model1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>         less_hs               hs     some_college       associates 
+    6.776896e+05     5.066404e+05     9.394845e+04     2.935313e+04 
+bachelors_higher        emp_ratio    median_income     poverty_perc 
+    2.287237e+06     3.266584e+00     5.075455e+00     3.939155e+00 </code></pre>
+</div>
+</div>
+<p>Using 80% of our data as training data, and the remaining 20% for testing, our first model above is a linear regression model that includes all of our predictor variables, and we see there were quite a few variables having high VIF values greater than 5. To avoid issues of multicollinearity, we’ll remove those having a value greater than 5. That leaves us with our second model below with variables bachelor’s or higher, employment ratio, median income, and poverty rates. Checking again for multicollinearity, VIF values appear less than 5 which is a good sign.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Click to view code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We can see that there's high VIF values for educational attainment, so we'll just stick </span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># to one of these variables and create another model</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>model2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(grad_perc <span class="sc">~</span> bachelors_higher <span class="sc">+</span> emp_ratio <span class="sc">+</span> median_income <span class="sc">+</span> </span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>               poverty_perc, <span class="at">data =</span> train_data)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(model2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>bachelors_higher        emp_ratio    median_income     poverty_perc 
+        5.415656         3.182061         4.782406         2.256569 </code></pre>
+</div>
+</div>
+<p>Summarizing the t-test results shown below, we may also point out that all of the variables in model 2 have a p-value less than the 0.01 threshold, except for employment ratio, which is still significant, but only under a p-value threshold of 0.05. This tells us that there is significant evidence that educational attainment, median income, and poverty rates are significantly associated with graduation rates.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Click to view code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = grad_perc ~ bachelors_higher + emp_ratio + median_income + 
+    poverty_perc, data = train_data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-28.5975  -6.7788   0.3433   6.5178  27.8177 
+
+Coefficients:
+                   Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)       6.919e+01  7.741e+00   8.938  &lt; 2e-16 ***
+bachelors_higher  5.822e+01  7.026e+00   8.286 2.42e-15 ***
+emp_ratio        -1.385e+01  1.391e+01  -0.995     0.32    
+median_income    -1.280e-04  2.224e-05  -5.758 1.84e-08 ***
+poverty_perc     -3.616e+01  5.596e+00  -6.462 3.42e-10 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 9.266 on 355 degrees of freedom
+Multiple R-squared:  0.3777,    Adjusted R-squared:  0.3707 
+F-statistic: 53.87 on 4 and 355 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>Applying our testing dataset to our prediction model, we’ve also calculated the root mean squared error (RMSE), mean absolute error (MAE), and R-squared to evaluate how well our model performs.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Click to view code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make the predictions, then compare it against actual values</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>predictions <span class="ot">&lt;-</span> <span class="fu">predict</span>(model2, <span class="at">newdata =</span> test_data)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Actual =</span> test_data<span class="sc">$</span>grad_perc,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>                      <span class="at">Predicted =</span> predictions)</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate RMSE, MAE, and R-squared to see how well our model performed </span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>rmse_value <span class="ot">&lt;-</span> <span class="fu">rmse</span>(test_data<span class="sc">$</span>grad_perc, predictions)</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>mae_value <span class="ot">&lt;-</span> <span class="fu">mae</span>(test_data<span class="sc">$</span>grad_perc, predictions)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>r_squared <span class="ot">&lt;-</span> <span class="fu">cor</span>(test_data<span class="sc">$</span>grad_perc, predictions)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Print out the model metric results</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"RMSE:"</span>, rmse_value, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>RMSE: 10.44123 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Click to view code</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"MAE:"</span>, mae_value, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>MAE: 8.468192 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Click to view code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"R-squared:"</span>, r_squared, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>R-squared: 0.3053693 </code></pre>
+</div>
+</div>
+<p>The RMSE was found to be roughly 9.9, meaning that on average our model’s predictions deviate from the actual graduation rates by 9.9%. This is a relatively high RMSE because we would want our model to make predictions as accurate as possible, so a lower RMSE would’ve been more ideal. Similarly, the same thing can be said with the MAE being roughly 7.9. As for the R-squared value, roughly 30.5% of the variability in graduation rates can be explained by our predictor variables. Overall, it seems like our model isn’t quite great at producing accurate graduation results, and this can be proven below where we calculated the probability of accuracy with a tolerance of 5%, or in other words, a prediction matches the actual graduation rate if the predicted rate is within +/- 5 percent of the actual value.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Click to view code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We'll set the tolerance level to 5%, meaning a prediction matches the actual graduation </span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="co"># rate if the predicted rate is within +/- 5 percent of the actual value. Then find the </span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="co"># absolute value difference</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>tolerance <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>difference <span class="ot">&lt;-</span> <span class="fu">abs</span>(test_data<span class="sc">$</span>grad_perc <span class="sc">-</span> predictions)</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>accuracy <span class="ot">&lt;-</span> difference <span class="sc">&lt;=</span> tolerance</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Find the probability of accuracy</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>accuracy_probability <span class="ot">&lt;-</span> <span class="fu">mean</span>(accuracy)</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Probability of Accuracy (+/- 5%%): %.1f%%</span><span class="sc">\n</span><span class="st">"</span>, accuracy_probability <span class="sc">*</span> <span class="dv">100</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Probability of Accuracy (+/- 5%): 34.1%</code></pre>
+</div>
+</div>
+<p>The probability of the predicted graduation rates matching the actual graduation rates is roughly 34.1%, which proves that this isn’t a very great model. We can see these results visually where the red line indicates where predicted values match actual values; this makes sense given how far apart the points are from the red solid line.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Click to view code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Now we'll plot the predicted values versus actual values</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>prediction_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(results, <span class="fu">aes</span>(<span class="at">x =</span> Actual, <span class="at">y =</span> Predicted)) <span class="sc">+</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"darkseagreen4"</span>) <span class="sc">+</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"tomato3"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Predicted vs Actual Graduation Rates Using Linear Regression Predictor Model"</span>,</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Actual Graduation Rate (%)"</span>,</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Predicted Graduation Rate (%)"</span>,</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">"Data sourced from NYC Public Schools InfoHub: Graduation results for Classes of 2015 to 2019"</span>) <span class="sc">+</span></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(); prediction_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Socioeconomic_Factors_NYC_Schools_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="limitations-conclusion-future-outlook" class="level1">
+<h1>Limitations, Conclusion &amp; Future Outlook</h1>
+<p>Though we were unable to create a prediction model that can accurately predict graduation rates given the variable we’ve used, we look forward to continuing further analysis by possibly incorporating other potential factors and trying other modelling methods. One of the reasons for creating this model was to see if we could predict future graduation rates of more recent years (such as 2022 to 2023), however our data was limited in regards to the independent/predictor variables we used. One other important note to consider is the impact that the Covid-19 pandemic had (and possibly the after-effects) on both students’ education and communities across New York City (for example, consider the employment rates during the pandemic). It’s possible that coming up with improved models may be challenging because of these events that unfolded. Additionally during this time period, I recall nearly all school districts taking procedures such that not one student would fail to graduate or fail to move up to the next grade. Most Regent examinations were cancelled in 2020, as well. While there are some limitations, it pushes us to explore further with the circumstances we have, and more.We understand that there must be much more to consider when it comes to students’ academic achievements, but overall we do know median income, poverty rates, and community educational attainment does have an impact on high school students, more so than younger students in elementary and middle schools.</p>
+<p>What policies should be considered to improve student outcomes? For one, the NYC DOE will be implementing a <a href="https://www.chalkbeat.org/newyork/2024/11/04/new-york-plans-to-end-regents-exam-requirement-by-2027-2028-school-year/#:~:text=New%20York%20students%20will%20no,timeline%20state%20officials%20unveiled%20Monday.">new policy</a> where students are no longer required to pass Regents exams effective in the 2027-28 school year. We’re interested to see how this may impact graduation rates (hopefully for the better), and overall we look forward to positive changes that enable equitable access to quality education. Increasing support services for low-income students and coming up with new initiatives to reduce the socioeconomic disparities across school districts is one step forward to ensuring New York City’s students have the opportunity to succeed in the best way possible.</p>
+</section>
+<section id="citations" class="level1">
+<h1>Citations</h1>
+<p>Ferguson, H., Bovaird, S., &amp; Mueller, M. (2007). The impact of poverty on educational outcomes for children. Paediatrics &amp; child health, 12(8), 701–706. <a href="https://doi.org/10.1093/pch/12.8.701" class="uri">https://doi.org/10.1093/pch/12.8.701</a></p>
+<p>Duncan, G. J., Morris, P. A., &amp; Rodrigues, C. (2011). Does money really matter? Estimating impacts of family income on young children’s achievement with data from random-assignment experiments. Developmental psychology, 47(5), 1263–1279. <a href="https://doi.org/10.1037/a0023875" class="uri">https://doi.org/10.1037/a0023875</a></p>
+<p>Reeves, R. V., Richard V. Reeves, E. B., Sreehari Ravindranath, G. O. Q., Michael Hansen, A. C., &amp; Douglas N. Harris, J. V. (2022, October 12). Boys left behind: Education gender gaps across the US. Brookings. <a href="https://www.brookings.edu/articles/boys-left-behind-education-gender-gaps-across-the-us/" class="uri">https://www.brookings.edu/articles/boys-left-behind-education-gender-gaps-across-the-us/</a></p>
+<p>Wilbard, L., &amp; Michael Hansen, N. Z. (2023, June 27). Class size: What research says and what it means for state policy. Brookings. <a href="https://www.brookings.edu/articles/class-size-what-research-says-and-what-it-means-for-state-policy/" class="uri">https://www.brookings.edu/articles/class-size-what-research-says-and-what-it-means-for-state-policy/</a></p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
