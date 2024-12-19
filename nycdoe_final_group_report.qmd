@@ -1,0 +1,159 @@
+---
+title: "Academic Performance in New York City Public Schools"
+format:
+  html:
+    toc: true
+    html-math-method: katex
+--- 
+Written by: Cindy Li, Edosa Odia, Gautam Sharma, Fatima Wong   |  12/19/2024
+
+
+# Overarching Question: What factors are impacting overall academic performance in New York City’s public high schools?
+Key Findings:
+
+- Teacher-student ratios, specialized programs, and support systems all work together to influence student outcomes
+
+- Elements like teacher-student ratios, specialized programs, and support systems all work together to influence student outcomes
+
+- Schools with the most funding are schools with the most student need
+
+- Consistent attendance has moderate impact on academic success
+
+- The socioeconomic impact on student achievements is a function of school district poverty, income, educational climate, and employment rates
+
+Within our overarching question, we are exploring four specific areas:
+
+
+1. [Socioeconomic Factors of the District](https://fatima8808.github.io/STA9750-2024-FALL/Socioeconomic_Factors_NYC_Schools.html)
+
+- How do socioeconomic factors like household income and poverty rates across school districts/community neighborhoods correlate with student academic results in early years of schooling (i.e. elementary & middle school)?
+
+- What patterns appear when comparing academic performance across schools in wealthier and lower-income neighborhoods?
+
+- How are public high schools across school districts impacted by socioeconomic factors? Are there stronger correlations compared to correlation findings of younger students? How might these factors play a role in graduation/drop-out rates and to what extent? Using the factors that correlate/impact student academic results (if any), how can we predict high school graduation rates using these socioeconomic variables? 
+
+2. [Student Demographics](https://edodia.github.io/STA9750-2024-FALL/Attendance&GraduationRates.html)
+
+- Do teacher student ratios and class size tend to correlate with higher academic performance across districts? 
+
+- Schools may offer mental health programs, and after school programs, while some may not. Is this dependent on the district or not?
+
+- To what extent are mental health programs and after school programs correlated with academic performance (middle and high school)?
+
+3. [School Characteristics](https://gautam-1-r.github.io/STA9750-2024-FALL/Individual_Report)
+
+- Do teacher student ratios and class size tend to correlate with higher academic performance across districts? 
+
+- Schools may offer mental health programs, and after school programs, while some may not. Is this dependent on the district or not?
+
+- To what extent are mental health programs and after school programs correlated with academic performance (middle and high school)?
+
+4. [School Funding & Spending](https://cndy17.github.io/STA9750-2024-FALL/NYCPSFunding.html)
+
+- How does city-wide and district-wide per-pupil spending relate to academic performance?   
+
+- Does spending on certain purposes or functions correlate with higher academic performance? 
+
+- Are school funding and spending proportionate to the number of students enrolled? Are there certain schools that are more likely to be successful in obtaining sources of funding? Do charter schools receive more funding and how are their funds spent?
+
+
+# Motivations and Importance
+The New York City Public School System serves one of the most diverse groups of students. In our analysis, we are curious about how NYC students (our age and younger) have been performing given many technological improvements in recent years. Prior research has shown financial and demographic inequalities having an impact on student academic achievement. Our goal is to figure out which factors, and to what extent, impact NYC students. Studying the latest trends in education can help improve the educational system across NYC Public Schools to better prepare students for their future.
+
+# Literature Review
+
+As mentioned, prior research has identified several factors to student learning and academic achievement that helped direct our motivation and analysis. Walberg's (1981) Theory of Educational Productivity outlines nine key variables influencing learning: aptitude/previous achievement, child development, motivation, instruction quality, instruction quantity, curriculum at home, classroom morale, and peer group.
+
+Research by Phyllis Resnick, one of the co-founders of the Colorado Futures Center, emphasizes the importance of early literacy, noting that students who are not reading at grade level by third grade face increased risks of academic and professional setbacks. This underscores the significance of early interventions to close achievement gaps before they widen. The relationship between school funding and academic performance remains contentious, though studies suggest that increased funding, especially in underserved areas, tends to improve outcomes—particularly when directed toward teacher quality and learning resources.
+
+![](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSd0eTpPAiNLNqNwYcR2gKMisdJzUTioFXObg&s){width="100"}
+The Brookings Institution has conducted research on education across the US. Its studies show mixed results on the impact of class sizes. While smaller class sizes in Texas correlate with improved outcomes, research in other states like Florida and Connecticut has shown little effect, suggesting that class size impacts may depend on local context, such as teacher quality and student needs. Its research also shed light on gender disparities in graduation rates across the US, with girls consistently outperforming boys in high school completion. In 2021, 88.4% of girls graduated on time compared to 81.9% of boys, a trend seen across multiple states.
+
+![](https://keystoneacademic-res.cloudinary.com/image/upload/f_auto/q_auto/g_auto/w_200/dpr_2.0/element/11/119400_NYULogo1000x.jpg){width="100"}
+The Research Alliance for New York City Schools by Steinhardt NYU found that English language learners (ELLs) in high school often face barriers to accessing advanced coursework, but the achievement gaps for ELLs narrow over time with targeted interventions. Attendance is another factor identified by the Research Alliance. Additionally, the highest rates of absenteeism are found in the city’s most impoverished neighborhoods.
+
+# Data Sources
+We’ve used a variety of data sets obtained from the [US Census Bureau](https://data.cccnewyork.org/data) as well as the [NYC DOE Infohub](https://infohub.nyced.org/reports/academics/test-results), which is the official website containing historic data of student academics and public school funding information specifically in the five boroughs. More specifically, we’ll take a look at the public school fundings, school characteristics, English Language Arts and Math State Tests, Regent scores, and high school graduation rates roughly over the last 15 years. While we did encounter some issues with our data, specifically the years that data was made available. To approach this, we first began with looking at data from the early 2010s and as we progressed with our questions, we shifted to analyzing more recent years.
+
+# Findings & Visuals
+
+## Socioeconomic Factors of the District
+![](https://raw.githubusercontent.com/fatima8808/STA9750-2024-FALL/main/correlations_swe_hs.jpg)
+
+Given the socioeconomic factors we’ve worked with, that is, median household incomes, poverty rates, employment rates, SNAP Benefits rates, and educational attainment, each of these factors play a significant role in students’ academic achievements at both the elementary/middle school level and high school level in the years we’ve analyzed (2006 to 2019 for elementary/middle school districts, and 2015 to 2019 for high school districts). For students across all types of schools, poverty and snap rates appear to correlate to student examination scores and graduation rates (for high schoolers). Shown above, however, we can see how in more recent years, public high schools across school districts were found to have stronger correlations with some variables compared to younger students. For example, consider the left plot where we see a weak negative correlation between mean scale scores and educational attainment (Associate’s, Bachelor’s +, etc.). When we look at how educational attainment correlates with high school students, much stronger positive correlations. We suspect the possibility that higher schoolers are more heavily impacted by these factors compared to younger students.
+
+![](https://raw.githubusercontent.com/fatima8808/STA9750-2024-FALL/main/income_hs_performance.jpg)
+
+Additionally, academic performance across wealthy and lower income school districts were also found to have significant differences, specifically for high school students. Lower income districts were found to have lower graduation rates on average; and similarly, higher income districts were found to have higher graduation rates. When it comes to high school examinations, on average, lower income districts performed more poorly on exams than middle and high income districts. To give even further perspective of how median incomes and poverty rates have changed over time, we’ve animated the below plots.
+
+![](https://raw.githubusercontent.com/fatima8808/STA9750-2024-FALL/main/income_animation.gif)
+
+![](https://raw.githubusercontent.com/fatima8808/STA9750-2024-FALL/main/poverty_animation.gif)
+
+We can see poverty rates and median income has changed slightly over time, where in some districts, poverty has gone up, whereas in others, median income has increased. 
+
+Lastly, a linear regression model was created to predict average graduation rates across school districts. Using all of our socioeconomic factors and adjusting our model accordingly by calculating their VIF values, we used the following predictor variables in our model: `bachelors_higher`, `emp_ratio`, `median_income`, and `poverty_perc`. Using 80% of available graduation data to train our model and the remaining 20% for testing, we found that a linear regression model may not be the best method to predict graduation rates due to having roughly only a 34% successful prediction rate. Despite this finding, we look forward to creating better improved models using other machine learning algorithms, as well as other predictor variables that may suggest more impactful influence on high school graduation rates.
+
+## Student Demographics
+
+
+
+
+
+
+
+
+## School Characteristics and Academic Performance
+Class size and teacher-to-student ratios are among the factors that consistently affect academic performance. Smaller class sizes can afford more individualized attention, which can be especially helpful for disadvantaged students. However, in well-resourced districts, the impact may be less noticeable due to existing support systems. Specialized and charter schools often provide rigorous academic settings, contributing to better student performance. Specialized schools focus on select populations with advanced curriculum, while charter schools, with flexible teaching models, show varied results depending on leadership, funding, and demographics.
+
+**School Characteristics that Promote Academic Success**
+Certain characteristics significantly contribute to better academic outcomes:
+
+* Specialized High Schools: These schools have curricula focused on the STEM subjects, with selective admissions and heavy funding; their alumni donations increase this funding, allowing for better facilities and programs. 
+* Charter Schools: While performance may vary, charter schools sometimes thrive where leadership, funding, and curricula come together to fill a specific need. Their success in certain districts is augmented by the ability to customize teaching approaches.
+* Teacher Quality: Teachers who are experienced and well-trained are important for student success. Other factors that are important in the improvement of academic outcomes include teacher-student ratios, professional development, and retention.
+* Resources and Facilities: Well-funded schools have managed to offer enriching environments through advanced technology, extracurricular activities, and modern facilities that have helped in improving engagement and academic results.
+
+**Resource Disparities and Academic Performance**
+![](https://gautam-1-r.github.io/STA9750-2024-FALL/project_files/figure-html/unnamed-chunk-4-1.png)
+Specialized schools receive private alumni donations, enabling them to provide higher-quality programs and extracurricular activities. Charter schools also suffer from funding inequities: some have decent budgets that enable them to draw qualified teachers and create challenging courses, while others-often in the poorest areas-experience severe resource constraints resulting in uneven learning opportunities for children.
+
+**Mental Health and After-School Programs**
+Mental health services are essential in ensuring academic success, enhancing student engagement, attendance, and performance due to the reduction of challenges related to stress and anxiety. Similarly, after-school programs in academic enrichment, tutoring, and extracurricular activities have a positive impact on academic achievement and motivation. 
+Addressing inequalities in resources and access to support programs is vital for reducing achievement gaps across schools.
+
+## School Funding & Spending
+![](https://cndy17.github.io/STA9750-2024-FALL/images/spending_map_0412.gif)
+![](https://cndy17.github.io/STA9750-2024-FALL/images/expendituremap.gif) 
+
+The map above shows the distribution of per-pupil funding across NYC public schools. Over the years, we’ve seen public school funding increase across NYC as a whole. Since 2007, the schools have been funded according to the “Fair Student Funding” formula, aimed at allocating resources based on student enrollment and student needs. When we dive into the purpose of funding received, the majority of a school’s funding goes to classroom teacher salaries. While increasing funding for classroom teachers can boost student performance, this is observed only to a certain point, as seen below.
+
+![](https://cndy17.github.io/STA9750-2024-FALL/NYCPSFunding_files/figure-html/unnamed-chunk-27-2.png)
+In fact, more funding in this case tends to reflect a need to support students with higher academic or social needs and we actually see lower scores for schools with greater funding. For instance, the top funded schools are District 75 schools serving students with special needs. So, while funding is critical, we may not see its impacts on student achievement yet. 
+
+# Potential Next Steps
+
+A limitation to our analysis was the availability of data across a consistent time frame. Some of our data sources were only available for the early 2000s and others for the later 2010s. In the future, we recommend following a cohort of students to track academic performance over an extended period and even as they move between schools. This would be helpful in tracking ELL students as they progress through school. We also suggest partnering with schools to gain deeper insights and more robust data. With this data, we could see when school spending for certain purposes was realized and more closely tie how spending efforts relate to academic performance. We can also hear qualitative responses on how certain school programs have impacted students.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
